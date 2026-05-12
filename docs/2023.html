@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSIS3764 — Semester Test 2</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0f14;
+      --surface: #161a22;
+      --border: #252b38;
+      --accent-2023: #00d4ff;
+      --accent-2022: #ff6b35;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --green: #22c55e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+
+    /* Header */
+    header {
+      margin-bottom: 64px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--green);
+      border: 1px solid var(--green);
+      padding: 4px 10px;
+      border-radius: 3px;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.1s;
+    }
+
+    h1 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.2s;
+    }
+
+    h1 span {
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .subtitle {
+      margin-top: 14px;
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.3s;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+      margin: 48px 0;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.4s;
+    }
+
+    /* Section label */
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    /* Year blocks */
+    .year-block {
+      margin-bottom: 56px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    .year-block:nth-child(1) {
+      animation-delay: 0.5s;
+    }
+
+    .year-block:nth-child(2) {
+      animation-delay: 0.65s;
+    }
+
+    .year-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .year-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .year-badge.y2023 {
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--accent-2023);
+      border: 1px solid rgba(0, 212, 255, 0.25);
+    }
+
+    .year-badge.y2022 {
+      background: rgba(255, 107, 53, 0.1);
+      color: var(--accent-2022);
+      border: 1px solid rgba(255, 107, 53, 0.25);
+    }
+
+    .year-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Cards grid */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      transition: opacity 0.2s;
+      opacity: 0;
+    }
+
+    .card.notebook::before {
+      background: linear-gradient(90deg, var(--accent-2023), transparent);
+    }
+
+    .card.pdf::before {
+      background: linear-gradient(90deg, #a78bfa, transparent);
+    }
+
+    .card.notebook-orange::before {
+      background: linear-gradient(90deg, var(--accent-2022), transparent);
+    }
+
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .card-type {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .card-arrow {
+      font-size: 13px;
+      color: var(--muted);
+      align-self: flex-end;
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .card:hover .card-arrow {
+      transform: translateX(4px);
+      color: var(--text);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 80px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: gap;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.9s;
+    }
+
+    footer p {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <header>
+      <div class="tag">University of the Free State</div>
+      <h1>CSIS3764<br><span>Semester Test 2</span></h1>
+      <p class="subtitle">Department of Computer Science and Informatics &nbsp;·&nbsp; Bloemfontein Campus</p>
+    </header>
+
+    <div class="divider"></div>
+
+    <p class="section-label">Resources by year</p>
+
+    <!-- 2023 -->
+    <div class="year-block">
+      <div class="year-header">
+        <span class="year-badge y2023">2023</span>
+        <span class="year-title">Bank Customer Churn Analysis</span>
+      </div>
+      <div class="cards">
+        <a href="bank_churn_analysis.html" class="card notebook" target="_blank">
+          <span class="card-icon">📓</span>
+          <span class="card-type">Jupyter Notebook · HTML</span>
+          <span class="card-title">Bank Churn Analysis</span>
+          <p class="card-desc">Question 2 &amp; 3 — SVM / Naive Bayes classifiers &amp; k-Means clustering on
+            bank_customers.csv and wine.csv data.</p>
+          <span class="card-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 2022 -->
+    <div class="year-block">
+      <div class="year-header">
+        <span class="year-badge y2022">2022</span>
+        <span class="year-title">Medicine Prescription Analysis</span>
+      </div>
+      <div class="cards">
+        <a href="medicine_analysis_2022.html" class="card notebook-orange card" target="_blank">
+          <span class="card-icon">📓</span>
+          <span class="card-type">Jupyter Notebook · HTML</span>
+          <span class="card-title">Medicine Analysis 2022</span>
+          <p class="card-desc">Question 2 — KNN, Decision Tree &amp; Random Forest classifiers on medicine.csv to
+            predict medication prescription.</p>
+          <span class="card-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <footer>
+      <p>CSIS3764 · Assessor: W.S.J. Marais · Moderator: S.E.S. Campher</p>
+      <p>180 min · 90 marks</p>
+    </footer>
+
+  </div>
+</body>
+
+</html>
