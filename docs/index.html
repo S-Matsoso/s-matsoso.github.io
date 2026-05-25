@@ -1,747 +1,731 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>CSIS3754 Exam Cheatsheet</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap"
-            rel="stylesheet"
-        />
-        <style>
-            *,
-            *::before,
-            *::after {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
-
-            :root {
-                --bg: #0a0e14;
-                --surface: #111620;
-                --surface2: #171d2b;
-                --border: #1e2840;
-                --border2: #2a3655;
-                --accent: #00e5ff;
-                --accent2: #ff6b35;
-                --accent3: #7fff6e;
-                --accent4: #ffd166;
-                --text: #e8edf5;
-                --muted: #5a6a8a;
-                --code-bg: #0d1420;
-                --radius: 8px;
-                --danger: #ff4757;
-                --warn: #ffd166;
-                --good: #7fff6e;
-            }
-
-            html {
-                scroll-behavior: smooth;
-            }
-
-            body {
-                background: var(--bg);
-                color: var(--text);
-                font-family: "Instrument Sans", sans-serif;
-                font-size: 14px;
-                line-height: 1.6;
-                min-height: 100vh;
-            }
-
-            /* ── TOP BAR ── */
-            #topbar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 200;
-                background: rgba(10, 14, 20, 0.95);
-                backdrop-filter: blur(12px);
-                border-bottom: 1px solid var(--border);
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 0 16px;
-                height: 52px;
-            }
-
-            .logo {
-                font-family: "Syne", sans-serif;
-                font-weight: 800;
-                font-size: 1rem;
-                color: var(--accent);
-                white-space: nowrap;
-            }
-
-            .logo span {
-                color: var(--muted);
-                font-weight: 400;
-                font-size: 0.75rem;
-                margin-left: 6px;
-            }
-
-            /* search */
-            .search-wrap {
-                flex: 1;
-                max-width: 320px;
-                position: relative;
-            }
-
-            .search-wrap svg {
-                position: absolute;
-                left: 9px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: var(--muted);
-                pointer-events: none;
-            }
-
-            #search {
-                width: 100%;
-                background: var(--surface);
-                border: 1px solid var(--border);
-                border-radius: 6px;
-                color: var(--text);
-                font-family: "JetBrains Mono", monospace;
-                font-size: 0.75rem;
-                padding: 6px 10px 6px 28px;
-                outline: none;
-                transition: border-color 0.2s;
-            }
-
-            #search:focus {
-                border-color: var(--accent);
-            }
-
-            #search::placeholder {
-                color: var(--muted);
-            }
-
-            /* timer */
-            .timer-wrap {
-                display: flex;
-                gap: 6px;
-                align-items: center;
-                margin-left: auto;
-            }
-
-            .timer-btn {
-                background: var(--surface);
-                border: 1px solid var(--border);
-                border-radius: 5px;
-                color: var(--muted);
-                cursor: pointer;
-                font-family: "JetBrains Mono", monospace;
-                font-size: 0.7rem;
-                padding: 4px 8px;
-                transition: all 0.15s;
-            }
-
-            .timer-btn:hover,
-            .timer-btn.active {
-                background: var(--accent2);
-                border-color: var(--accent2);
-                color: #fff;
-            }
-
-            #timer-display {
-                font-family: "JetBrains Mono", monospace;
-                font-size: 1rem;
-                font-weight: 700;
-                color: var(--accent4);
-                min-width: 70px;
-                text-align: center;
-            }
-
-            #timer-display.warn {
-                color: var(--warn);
-                animation: pulse 1s infinite;
-            }
-
-            #timer-display.danger {
-                color: var(--danger);
-                animation: pulse 0.5s infinite;
-            }
-
-            @keyframes pulse {
-                0%,
-                100% {
-                    opacity: 1;
-                }
-
-                50% {
-                    opacity: 0.4;
-                }
-            }
-
-            /* nav tabs */
-            .nav-tabs {
-                display: flex;
-                gap: 4px;
-                padding: 0 12px;
-                overflow-x: auto;
-                scrollbar-width: none;
-            }
-
-            .nav-tabs::-webkit-scrollbar {
-                display: none;
-            }
-
-            .tab {
-                background: transparent;
-                border: 1px solid transparent;
-                border-radius: 5px;
-                color: var(--muted);
-                cursor: pointer;
-                font-family: "Syne", sans-serif;
-                font-size: 0.72rem;
-                font-weight: 600;
-                padding: 4px 10px;
-                white-space: nowrap;
-                transition: all 0.15s;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-            }
-
-            .tab:hover {
-                color: var(--text);
-                border-color: var(--border2);
-            }
-
-            .tab.active {
-                background: var(--surface2);
-                border-color: var(--accent);
-                color: var(--accent);
-            }
-
-            /* ── LAYOUT ── */
-            #app {
-                padding-top: 52px;
-                max-width: 1200px;
-                margin: 0 auto;
-            }
-
-            /* ── SECTIONS ── */
-            .section {
-                display: none;
-                padding: 20px 16px 60px;
-                animation: fadeIn 0.3s ease;
-            }
-
-            .section.active {
-                display: block;
-            }
-
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(8px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            /* Section header */
-            .sec-header {
-                margin-bottom: 20px;
-            }
-
-            .sec-title {
-                font-family: "Syne", sans-serif;
-                font-weight: 800;
-                font-size: 1.6rem;
-                margin-bottom: 4px;
-            }
-
-            .sec-title span {
-                color: var(--accent);
-            }
-
-            .sec-sub {
-                color: var(--muted);
-                font-size: 0.85rem;
-            }
-
-            /* time badge */
-            .time-badge {
-                display: inline-flex;
-                align-items: center;
-                gap: 5px;
-                background: rgba(255, 107, 53, 0.15);
-                border: 1px solid var(--accent2);
-                border-radius: 99px;
-                color: var(--accent2);
-                font-family: "JetBrains Mono", monospace;
-                font-size: 0.7rem;
-                padding: 3px 10px;
-                margin-bottom: 12px;
-            }
-
-            /* ── STEP CARDS ── */
-            .steps {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .step {
-                background: var(--surface);
-                border: 1px solid var(--border);
-                border-radius: var(--radius);
-                overflow: hidden;
-                transition: border-color 0.2s;
-            }
-
-            .step:hover {
-                border-color: var(--border2);
-            }
-
-            .step.highlight {
-                border-color: var(--accent) !important;
-                box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.15);
-            }
-
-            .step-head {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 10px 14px;
-                cursor: pointer;
-                user-select: none;
-            }
-
-            .step-num {
-                font-family: "JetBrains Mono", monospace;
-                font-size: 0.7rem;
-                font-weight: 700;
-                color: var(--bg);
-                background: var(--accent);
-                border-radius: 4px;
-                padding: 2px 7px;
-                flex-shrink: 0;
-            }
-
-            .step-num.orange {
-                background: var(--accent2);
-            }
-
-            .step-num.green {
-                background: var(--accent3);
-                color: #0a0e14;
-            }
-
-            .step-num.yellow {
-                background: var(--accent4);
-                color: #0a0e14;
-            }
-
-            .step-num.red {
-                background: var(--danger);
-            }
-
-            .step-title {
-                font-family: "Syne", sans-serif;
-                font-weight: 600;
-                font-size: 0.88rem;
-                flex: 1;
-            }
-
-            .step-marks {
-                font-family: "JetBrains Mono", monospace;
-                font-size: 0.68rem;
-                color: var(--muted);
-                flex-shrink: 0;
-            }
-
-            .step-arrow {
-                color: var(--muted);
-                font-size: 0.7rem;
-                transition: transform 0.2s;
-                flex-shrink: 0;
-            }
-
-            .step.open .step-arrow {
-                transform: rotate(180deg);
-            }
-
-            .step-body {
-                display: none;
-                border-top: 1px solid var(--border);
-                padding: 14px;
-            }
-
-            .step.open .step-body {
-                display: block;
-            }
-
-            /* code blocks */
-            pre {
-                background: var(--code-bg);
-                border: 1px solid var(--border);
-                border-radius: 6px;
-                overflow-x: auto;
-                margin: 8px 0;
-                font-family: "JetBrains Mono", monospace;
-                font-size: 0.75rem;
-                line-height: 1.6;
-            }
-
-            pre code {
-                display: block;
-                padding: 12px 14px;
-                color: #cdd6f4;
-            }
-
-            .kw {
-                color: #89dceb;
-            }
-
-            /* keyword */
-            .fn {
-                color: #89b4fa;
-            }
-
-            /* function */
-            .st {
-                color: #a6e3a1;
-            }
-
-            /* string */
-            .cm {
-                color: #45475a;
-                font-style: italic;
-            }
-
-            /* comment */
-            .nu {
-                color: #fab387;
-            }
-
-            /* number */
-            .cl {
-                color: #f9e2af;
-            }
-
-            /* class */
-            .va {
-                color: #cdd6f4;
-            }
-
-            /* variable */
-            .op {
-                color: #89dceb;
-            }
-
-            /* operator */
-
-            /* tips */
-            .tip {
-                background: rgba(0, 229, 255, 0.07);
-                border-left: 3px solid var(--accent);
-                border-radius: 0 6px 6px 0;
-                padding: 8px 12px;
-                margin: 8px 0;
-                font-size: 0.82rem;
-            }
-
-            .tip strong {
-                color: var(--accent);
-            }
-
-            .warn-box {
-                background: rgba(255, 209, 102, 0.08);
-                border-left: 3px solid var(--accent4);
-                border-radius: 0 6px 6px 0;
-                padding: 8px 12px;
-                margin: 8px 0;
-                font-size: 0.82rem;
-            }
-
-            .warn-box strong {
-                color: var(--accent4);
-            }
-
-            .good-box {
-                background: rgba(127, 255, 110, 0.07);
-                border-left: 3px solid var(--accent3);
-                border-radius: 0 6px 6px 0;
-                padding: 8px 12px;
-                margin: 8px 0;
-                font-size: 0.82rem;
-            }
-
-            .good-box strong {
-                color: var(--accent3);
-            }
-
-            .danger-box {
-                background: rgba(255, 71, 87, 0.08);
-                border-left: 3px solid var(--danger);
-                border-radius: 0 6px 6px 0;
-                padding: 8px 12px;
-                margin: 8px 0;
-                font-size: 0.82rem;
-            }
-
-            .danger-box strong {
-                color: var(--danger);
-            }
-
-            p {
-                margin-bottom: 6px;
-                font-size: 0.85rem;
-            }
-
-            ul,
-            ol {
-                margin: 6px 0 6px 18px;
-                font-size: 0.83rem;
-            }
-
-            li {
-                margin-bottom: 3px;
-            }
-
-            strong {
-                color: var(--text);
-                font-weight: 600;
-            }
-
-            /* ── GRID ── */
-            .two-col {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSIS3754 Exam Cheatsheet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0a0e14;
+            --surface: #111620;
+            --surface2: #171d2b;
+            --border: #1e2840;
+            --border2: #2a3655;
+            --accent: #00e5ff;
+            --accent2: #ff6b35;
+            --accent3: #7fff6e;
+            --accent4: #ffd166;
+            --text: #e8edf5;
+            --muted: #5a6a8a;
+            --code-bg: #0d1420;
+            --radius: 8px;
+            --danger: #ff4757;
+            --warn: #ffd166;
+            --good: #7fff6e;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Instrument Sans", sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ── TOP BAR ── */
+        #topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            background: rgba(10, 14, 20, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 16px;
+            height: 52px;
+        }
+
+        .logo {
+            font-family: "Syne", sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--accent);
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: var(--muted);
+            font-weight: 400;
+            font-size: 0.75rem;
+            margin-left: 6px;
+        }
+
+        /* search */
+        .search-wrap {
+            flex: 1;
+            max-width: 320px;
+            position: relative;
+        }
+
+        .search-wrap svg {
+            position: absolute;
+            left: 9px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        #search {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.75rem;
+            padding: 6px 10px 6px 28px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #search:focus {
+            border-color: var(--accent);
+        }
+
+        #search::placeholder {
+            color: var(--muted);
+        }
+
+        /* timer */
+        .timer-wrap {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .timer-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            color: var(--muted);
+            cursor: pointer;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            transition: all 0.15s;
+        }
+
+        .timer-btn:hover,
+        .timer-btn.active {
+            background: var(--accent2);
+            border-color: var(--accent2);
+            color: #fff;
+        }
+
+        #timer-display {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent4);
+            min-width: 70px;
+            text-align: center;
+        }
+
+        #timer-display.warn {
+            color: var(--warn);
+            animation: pulse 1s infinite;
+        }
+
+        #timer-display.danger {
+            color: var(--danger);
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        /* nav tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+            padding: 0 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab {
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            color: var(--muted);
+            cursor: pointer;
+            font-family: "Syne", sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            white-space: nowrap;
+            transition: all 0.15s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tab:hover {
+            color: var(--text);
+            border-color: var(--border2);
+        }
+
+        .tab.active {
+            background: var(--surface2);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* ── LAYOUT ── */
+        #app {
+            padding-top: 52px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ── SECTIONS ── */
+        .section {
+            display: none;
+            padding: 20px 16px 60px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Section header */
+        .sec-header {
+            margin-bottom: 20px;
+        }
+
+        .sec-title {
+            font-family: "Syne", sans-serif;
+            font-weight: 800;
+            font-size: 1.6rem;
+            margin-bottom: 4px;
+        }
+
+        .sec-title span {
+            color: var(--accent);
+        }
+
+        .sec-sub {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        /* time badge */
+        .time-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 107, 53, 0.15);
+            border: 1px solid var(--accent2);
+            border-radius: 99px;
+            color: var(--accent2);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            margin-bottom: 12px;
+        }
+
+        /* ── STEP CARDS ── */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .step {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .step:hover {
+            border-color: var(--border2);
+        }
+
+        .step.highlight {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.15);
+        }
+
+        .step-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .step-num {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--bg);
+            background: var(--accent);
+            border-radius: 4px;
+            padding: 2px 7px;
+            flex-shrink: 0;
+        }
+
+        .step-num.orange {
+            background: var(--accent2);
+        }
+
+        .step-num.green {
+            background: var(--accent3);
+            color: #0a0e14;
+        }
+
+        .step-num.yellow {
+            background: var(--accent4);
+            color: #0a0e14;
+        }
+
+        .step-num.red {
+            background: var(--danger);
+        }
+
+        .step-title {
+            font-family: "Syne", sans-serif;
+            font-weight: 600;
+            font-size: 0.88rem;
+            flex: 1;
+        }
+
+        .step-marks {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.68rem;
+            color: var(--muted);
+            flex-shrink: 0;
+        }
+
+        .step-arrow {
+            color: var(--muted);
+            font-size: 0.7rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+
+        .step.open .step-arrow {
+            transform: rotate(180deg);
+        }
+
+        .step-body {
+            display: none;
+            border-top: 1px solid var(--border);
+            padding: 14px;
+        }
+
+        .step.open .step-body {
+            display: block;
+        }
+
+        /* code blocks */
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 8px 0;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.75rem;
+            line-height: 1.6;
+        }
+
+        pre code {
+            display: block;
+            padding: 12px 14px;
+            color: #cdd6f4;
+        }
+
+        .kw {
+            color: #89dceb;
+        }
+
+        /* keyword */
+        .fn {
+            color: #89b4fa;
+        }
+
+        /* function */
+        .st {
+            color: #a6e3a1;
+        }
+
+        /* string */
+        .cm {
+            color: #45475a;
+            font-style: italic;
+        }
+
+        /* comment */
+        .nu {
+            color: #fab387;
+        }
+
+        /* number */
+        .cl {
+            color: #f9e2af;
+        }
+
+        /* class */
+        .va {
+            color: #cdd6f4;
+        }
+
+        /* variable */
+        .op {
+            color: #89dceb;
+        }
+
+        /* operator */
+
+        /* tips */
+        .tip {
+            background: rgba(0, 229, 255, 0.07);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 6px 6px 0;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 0.82rem;
+        }
+
+        .tip strong {
+            color: var(--accent);
+        }
+
+        .warn-box {
+            background: rgba(255, 209, 102, 0.08);
+            border-left: 3px solid var(--accent4);
+            border-radius: 0 6px 6px 0;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 0.82rem;
+        }
+
+        .warn-box strong {
+            color: var(--accent4);
+        }
+
+        .good-box {
+            background: rgba(127, 255, 110, 0.07);
+            border-left: 3px solid var(--accent3);
+            border-radius: 0 6px 6px 0;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 0.82rem;
+        }
+
+        .good-box strong {
+            color: var(--accent3);
+        }
+
+        .danger-box {
+            background: rgba(255, 71, 87, 0.08);
+            border-left: 3px solid var(--danger);
+            border-radius: 0 6px 6px 0;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 0.82rem;
+        }
+
+        .danger-box strong {
+            color: var(--danger);
+        }
+
+        p {
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+        }
+
+        ul,
+        ol {
+            margin: 6px 0 6px 18px;
+            font-size: 0.83rem;
+        }
+
+        li {
+            margin-bottom: 3px;
+        }
+
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* ── GRID ── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .three-col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        /* ── THEORY CARDS ── */
+        .theory-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+        }
+
+        .theory-card h3 {
+            font-family: "Syne", sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .theory-card p,
+        .theory-card li {
+            font-size: 0.8rem;
+            color: #aab4c8;
+        }
+
+        /* formula */
+        .formula {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.78rem;
+            color: var(--accent4);
+            margin: 6px 0;
+            text-align: center;
+        }
+
+        /* table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+            font-size: 0.78rem;
+        }
+
+        .data-table th {
+            background: var(--surface2);
+            color: var(--accent);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.7rem;
+            padding: 7px 10px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        .data-table td {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            color: #aab4c8;
+            vertical-align: top;
+        }
+
+        .data-table tr:nth-child(even) td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* highlight search */
+        mark {
+            background: rgba(255, 209, 102, 0.3);
+            color: var(--accent4);
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+
+        /* checklist */
+        .checklist {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 4px 0;
+            font-size: 0.82rem;
+        }
+
+        .checklist li::before {
+            content: "☐";
+            color: var(--muted);
+            flex-shrink: 0;
+            font-size: 1rem;
+            line-height: 1.3;
+        }
+
+        /* scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border2);
+            border-radius: 99px;
+        }
+
+        @media (max-width: 700px) {
+
+            .two-col,
             .three-col {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
+                grid-template-columns: 1fr;
             }
 
-            /* ── THEORY CARDS ── */
-            .theory-card {
-                background: var(--surface);
-                border: 1px solid var(--border);
-                border-radius: var(--radius);
-                padding: 14px;
+            .nav-tabs {
+                padding: 0 4px;
             }
 
-            .theory-card h3 {
-                font-family: "Syne", sans-serif;
-                font-weight: 700;
-                font-size: 0.9rem;
-                color: var(--accent);
-                margin-bottom: 8px;
+            #topbar {
+                padding: 0 8px;
+                gap: 6px;
             }
+        }
+    </style>
+</head>
 
-            .theory-card p,
-            .theory-card li {
-                font-size: 0.8rem;
-                color: #aab4c8;
-            }
-
-            /* formula */
-            .formula {
-                background: var(--code-bg);
-                border: 1px solid var(--border);
-                border-radius: 6px;
-                padding: 10px 14px;
-                font-family: "JetBrains Mono", monospace;
-                font-size: 0.78rem;
-                color: var(--accent4);
-                margin: 6px 0;
-                text-align: center;
-            }
-
-            /* table */
-            .data-table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 8px 0;
-                font-size: 0.78rem;
-            }
-
-            .data-table th {
-                background: var(--surface2);
-                color: var(--accent);
-                font-family: "JetBrains Mono", monospace;
-                font-size: 0.7rem;
-                padding: 7px 10px;
-                text-align: left;
-                border: 1px solid var(--border);
-            }
-
-            .data-table td {
-                padding: 6px 10px;
-                border: 1px solid var(--border);
-                color: #aab4c8;
-                vertical-align: top;
-            }
-
-            .data-table tr:nth-child(even) td {
-                background: rgba(255, 255, 255, 0.02);
-            }
-
-            /* highlight search */
-            mark {
-                background: rgba(255, 209, 102, 0.3);
-                color: var(--accent4);
-                border-radius: 2px;
-                padding: 0 2px;
-            }
-
-            /* checklist */
-            .checklist {
-                list-style: none;
-                margin-left: 0;
-            }
-
-            .checklist li {
-                display: flex;
-                align-items: flex-start;
-                gap: 8px;
-                padding: 4px 0;
-                font-size: 0.82rem;
-            }
-
-            .checklist li::before {
-                content: "☐";
-                color: var(--muted);
-                flex-shrink: 0;
-                font-size: 1rem;
-                line-height: 1.3;
-            }
-
-            /* scrollbar */
-            ::-webkit-scrollbar {
-                width: 5px;
-                height: 5px;
-            }
-
-            ::-webkit-scrollbar-track {
-                background: var(--bg);
-            }
-
-            ::-webkit-scrollbar-thumb {
-                background: var(--border2);
-                border-radius: 99px;
-            }
-
-            @media (max-width: 700px) {
-                .two-col,
-                .three-col {
-                    grid-template-columns: 1fr;
-                }
-
-                .nav-tabs {
-                    padding: 0 4px;
-                }
-
-                #topbar {
-                    padding: 0 8px;
-                    gap: 6px;
-                }
-            }
-        </style>
-    </head>
-
-    <body>
-        <!-- TOP BAR -->
-        <div id="topbar">
-            <div class="search-wrap">
-                <svg
-                    width="13"
-                    height="13"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                >
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.35-4.35" />
-                </svg>
-                <input
-                    type="search"
-                    id="search"
-                    placeholder="Search code, steps…"
-                    autocomplete="off"
-                />
-            </div>
-            <div class="timer-wrap">
-                <button class="timer-btn" onclick="setTimer(40)">40m</button>
-                <button class="timer-btn" onclick="setTimer(120)">120m</button>
-                <button class="timer-btn" onclick="setTimer(140)">140m</button>
-                <div id="timer-display">--:--</div>
-                <button
-                    class="timer-btn"
-                    id="start-btn"
-                    onclick="toggleTimer()"
-                >
-                    ▶
-                </button>
-                <button class="timer-btn" onclick="resetTimer()">↺</button>
-            </div>
-            <div class="nav-tabs" id="nav">
-                <button class="tab active" onclick="showSection('st1')">
-                    ST1 Preprocess
-                </button>
-                <button class="tab" onclick="showSection('st2-theory')">
-                    ST2 Theory
-                </button>
-                <button class="tab" onclick="showSection('st2-practical')">
-                    ST2 ML Pipeline
-                </button>
-                <button class="tab" onclick="showSection('interpret')">
-                    📊 Interpret
-                </button>
-                <button class="tab" onclick="showSection('snippets')">
-                    ⚡ Quick Code
-                </button>
-            </div>
-            <div class="nav-tabs" id="nav">
-                <a href="2023.html" class="tab">MoreQPs</a>
-            </div>
+<body>
+    <!-- TOP BAR -->
+    <div id="topbar">
+        <div class="search-wrap">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input type="search" id="search" placeholder="Search code, steps…" autocomplete="off" />
         </div>
+        <div class="timer-wrap">
+            <button class="timer-btn" onclick="setTimer(40)">40m</button>
+            <button class="timer-btn" onclick="setTimer(120)">120m</button>
+            <button class="timer-btn" onclick="setTimer(140)">140m</button>
+            <div id="timer-display">--:--</div>
+            <button class="timer-btn" id="start-btn" onclick="toggleTimer()">
+                ▶
+            </button>
+            <button class="timer-btn" onclick="resetTimer()">↺</button>
+        </div>
+        <div class="nav-tabs" id="nav">
+            <button class="tab active" onclick="showSection('st1')">
+                ST1 Preprocess
+            </button>
+            <button class="tab" onclick="showSection('st2-theory')">
+                ST2 Theory
+            </button>
+            <button class="tab" onclick="showSection('st2-practical')">
+                ST2 ML Pipeline
+            </button>
+            <button class="tab" onclick="showSection('interpret')">
+                📊 Interpret
+            </button>
+            <button class="tab" onclick="showSection('snippets')">
+                ⚡ Quick Code
+            </button>
+        </div>
+        <div class="nav-tabs" id="nav">
+            <a href="2023.html" class="tab">MoreQPs</a>
+        </div>
+    </div>
 
-        <div id="app">
-            <!-- ══════════════════════════════════════
+    <div id="app">
+        <!-- ══════════════════════════════════════
      ST1 — PREPROCESSING (120 min)
 ══════════════════════════════════════ -->
-            <div class="section active" id="sec-st1">
-                <div class="sec-header">
-                    <div class="time-badge">
-                        ⏱ 120 min practical · 60 min theory · 90 marks total
-                    </div>
-                    <div class="sec-title">
-                        Semester Test 1 — <span>Data Preprocessing</span>
-                    </div>
-                    <div class="sec-sub">
-                        Import → Inspect → Clean → Encode → Scale → Export.
-                        Follow every step in order. Always show output after
-                        each operation.
-                    </div>
+        <div class="section active" id="sec-st1">
+            <div class="sec-header">
+                <div class="time-badge">
+                    ⏱ 120 min practical · 60 min theory · 90 marks total
                 </div>
+                <div class="sec-title">
+                    Semester Test 1 — <span>Data Preprocessing</span>
+                </div>
+                <div class="sec-sub">
+                    Import → Inspect → Clean → Encode → Scale → Export.
+                    Follow every step in order. Always show output after
+                    each operation.
+                </div>
+            </div>
 
-                <div class="steps">
-                    <!-- STEP 1 -->
-                    <div class="step open">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">01</span>
-                            <span class="step-title"
-                                >Import Libraries & Load Data</span
-                            >
-                            <span class="step-marks">marks: 1–3</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
+            <div class="steps">
+                <!-- STEP 1 -->
+                <div class="step open">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">01</span>
+                        <span class="step-title">Import Libraries & Load Data</span>
+                        <span class="step-marks">marks: 1–3</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
 <span class="kw">import</span> numpy <span class="kw">as</span> np
 <span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
 <span class="kw">import</span> seaborn <span class="kw">as</span> sns
@@ -749,27 +733,25 @@
 <span class="cm"># Load CSV — name the dataframe exactly as the question says</span>
 cars = pd.<span class="fn">read_csv</span>(<span class="st">'cars.csv'</span>)         <span class="cm"># ST1 2025</span>
 log  = pd.<span class="fn">read_csv</span>(<span class="st">'aviation_log.csv'</span>) <span class="cm"># ST1 2024</span></code></pre>
-                            <div class="tip">
-                                <strong
-                                    >Always name the df exactly as
-                                    specified.</strong
-                                >
-                                They check variable names. Read the question
-                                carefully.
-                            </div>
+                        <div class="tip">
+                            <strong>Always name the df exactly as
+                                specified.</strong>
+                            They check variable names. Read the question
+                            carefully.
                         </div>
                     </div>
+                </div>
 
-                    <!-- STEP 2 -->
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">02</span>
-                            <span class="step-title">Inspect the Data</span>
-                            <span class="step-marks">marks: 2–5</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># Shape: rows & columns</span>
+                <!-- STEP 2 -->
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">02</span>
+                        <span class="step-title">Inspect the Data</span>
+                        <span class="step-marks">marks: 2–5</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># Shape: rows & columns</span>
 <span class="fn">print</span>(cars.<span class="fn">shape</span>)              <span class="cm"># (rows, cols)</span>
 <span class="fn">print</span>(<span class="st">f"Rows: </span>{cars.<span class="fn">shape</span>[<span class="nu">0</span>]}<span class="st">, Cols: </span>{cars.<span class="fn">shape</span>[<span class="nu">1</span>]}<span class="st">"</span>)
 <span class="fn">print</span>(cars.<span class="fn">shape</span>[<span class="nu">0</span>] * cars.<span class="fn">shape</span>[<span class="nu">1</span>])  <span class="cm"># total elements</span>
@@ -789,24 +771,24 @@ cars.<span class="fn">info</span>()
 
 <span class="cm"># Statistical summary</span>
 cars.<span class="fn">describe</span>(include=<span class="st">'all'</span>)   <span class="cm"># include='all' shows text cols too</span></code></pre>
-                            <div class="warn-box">
-                                <strong>include='all'</strong> shows count,
-                                unique, top, freq for text columns — needed when
-                                question asks about those stats.
-                            </div>
+                        <div class="warn-box">
+                            <strong>include='all'</strong> shows count,
+                            unique, top, freq for text columns — needed when
+                            question asks about those stats.
                         </div>
                     </div>
+                </div>
 
-                    <!-- STEP 3 -->
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">03</span>
-                            <span class="step-title">Rename Columns</span>
-                            <span class="step-marks">marks: 2</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># Rename specific columns</span>
+                <!-- STEP 3 -->
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">03</span>
+                        <span class="step-title">Rename Columns</span>
+                        <span class="step-marks">marks: 2</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># Rename specific columns</span>
 log.<span class="fn">rename</span>(columns={
     <span class="st">'Location'</span>: <span class="st">'Incident_Location'</span>,
     <span class="st">'Operator'</span>: <span class="st">'Airline_Operator'</span>,
@@ -814,21 +796,19 @@ log.<span class="fn">rename</span>(columns={
 }, inplace=<span class="kw">True</span>)
 
 log.<span class="fn">head</span>()  <span class="cm"># show the change</span></code></pre>
-                        </div>
                     </div>
+                </div>
 
-                    <!-- STEP 4 -->
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">04</span>
-                            <span class="step-title"
-                                >Shuffle & Reset Index</span
-                            >
-                            <span class="step-marks">marks: 6</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># Shuffle ALL rows</span>
+                <!-- STEP 4 -->
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">04</span>
+                        <span class="step-title">Shuffle & Reset Index</span>
+                        <span class="step-marks">marks: 6</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># Shuffle ALL rows</span>
 cars = cars.<span class="fn">sample</span>(frac=<span class="nu">1</span>)
 
 <span class="cm"># Rows 1 to 10 by POSITION (iloc)</span>
@@ -844,26 +824,24 @@ cars.<span class="fn">loc</span>[<span class="nu">1</span>:<span class="nu">10</
 <span class="cm"># Reset index after shuffle</span>
 cars = cars.<span class="fn">reset_index</span>(drop=<span class="kw">True</span>)
 cars.<span class="fn">head</span>()</code></pre>
-                            <div class="tip">
-                                <strong>Exam tip:</strong> iloc = integer
-                                position (always 0-based). loc = label (uses
-                                whatever the index value is after shuffle).
-                            </div>
+                        <div class="tip">
+                            <strong>Exam tip:</strong> iloc = integer
+                            position (always 0-based). loc = label (uses
+                            whatever the index value is after shuffle).
                         </div>
                     </div>
+                </div>
 
-                    <!-- STEP 5 -->
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">05</span>
-                            <span class="step-title"
-                                >Add Calculated Columns</span
-                            >
-                            <span class="step-marks">marks: 2–4</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># Add age column (current year - year column)</span>
+                <!-- STEP 5 -->
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">05</span>
+                        <span class="step-title">Add Calculated Columns</span>
+                        <span class="step-marks">marks: 2–4</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># Add age column (current year - year column)</span>
 <span class="kw">import</span> datetime
 cars[<span class="st">'age'</span>] = datetime.datetime.<span class="fn">now</span>().<span class="fn">year</span> - cars[<span class="st">'year'</span>]
 cars.<span class="fn">tail</span>()
@@ -881,19 +859,19 @@ cars.<span class="fn">drop_duplicates</span>(subset=<span class="st">'name'</spa
 <span class="cm"># Add combined column</span>
 log[<span class="st">'Total_Fatalities'</span>] = log[<span class="st">'Fatalities_Aboard'</span>] + log[<span class="st">'Ground_Fatalities'</span>]
 log.<span class="fn">head</span>()</code></pre>
-                        </div>
                     </div>
+                </div>
 
-                    <!-- STEP 6 -->
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">06</span>
-                            <span class="step-title">Date Handling</span>
-                            <span class="step-marks">marks: 2–4</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># Convert to datetime</span>
+                <!-- STEP 6 -->
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">06</span>
+                        <span class="step-title">Date Handling</span>
+                        <span class="step-marks">marks: 2–4</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># Convert to datetime</span>
 log[<span class="st">'Date'</span>] = pd.<span class="fn">to_datetime</span>(log[<span class="st">'Date'</span>])
 
 <span class="cm"># Extract year / month / day as integers</span>
@@ -901,21 +879,19 @@ log.<span class="fn">insert</span>(log.columns.<span class="fn">get_loc</span>(<
 log.<span class="fn">insert</span>(log.columns.<span class="fn">get_loc</span>(<span class="st">'Time'</span>), <span class="st">'Month'</span>, log[<span class="st">'Date'</span>].dt.month.<span class="fn">astype</span>(<span class="st">'int'</span>))
 log.<span class="fn">insert</span>(log.columns.<span class="fn">get_loc</span>(<span class="st">'Time'</span>), <span class="st">'Day'</span>,   log[<span class="st">'Date'</span>].dt.day.<span class="fn">astype</span>(<span class="st">'int'</span>))
 log.<span class="fn">head</span>()</code></pre>
-                        </div>
                     </div>
+                </div>
 
-                    <!-- STEP 7 -->
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">07</span>
-                            <span class="step-title"
-                                >Visualise — Pie & Bar Charts</span
-                            >
-                            <span class="step-marks">marks: 4–5</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># PIE CHART — e.g. transmission type percentages</span>
+                <!-- STEP 7 -->
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">07</span>
+                        <span class="step-title">Visualise — Pie & Bar Charts</span>
+                        <span class="step-marks">marks: 4–5</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># PIE CHART — e.g. transmission type percentages</span>
 counts = cars[<span class="st">'transmission'</span>].<span class="fn">value_counts</span>()
 plt.<span class="fn">figure</span>(figsize=(<span class="nu">6</span>,<span class="nu">6</span>))
 plt.<span class="fn">pie</span>(counts, labels=counts.index,
@@ -936,27 +912,36 @@ sns.<span class="fn">barplot</span>(x=<span class="st">'Year'</span>, y=<span cl
 sns.<span class="fn">barplot</span>(x=<span class="st">'Year'</span>, y=<span class="st">'Fatalities_Aboard'</span>, data=log, color=<span class="st">'blue'</span>, label=<span class="st">'Aboard'</span>)
 plt.<span class="fn">legend</span>()
 plt.<span class="fn">show</span>()</code></pre>
-                            <div class="warn-box">
-                                <strong>Autopct for 3 decimals:</strong>
-                                <code>autopct=lambda p: f'{p:.3f}%'</code>
-                                &nbsp;|&nbsp; for 1 decimal:
-                                <code>f'{p:.1f}%'</code>
-                            </div>
+
+
+
+                        <code>yearly = log.groupby('Year')[['Total_Fatalities','Fatalities_Aboard']].sum().reset_index()
+plt.figure(figsize=(12,6))
+sns.barplot(x='Year', y='Total_Fatalities',
+            data=yearly, color='red', label='Total')
+sns.barplot(x='Year', y='Fatalities_Aboard',
+            data=yearly, color='blue', label='Aboard')
+plt.legend()
+plt.show()</code>
+                        <div class="warn-box">
+                            <strong>Autopct for 3 decimals:</strong>
+                            <code>autopct=lambda p: f'{p:.3f}%'</code>
+                            &nbsp;|&nbsp; for 1 decimal:
+                            <code>f'{p:.1f}%'</code>
                         </div>
                     </div>
+                </div>
 
-                    <!-- STEP 8 -->
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num orange">08</span>
-                            <span class="step-title"
-                                >Handle Missing Values</span
-                            >
-                            <span class="step-marks">marks: 3–8</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># Check for missing values</span>
+                <!-- STEP 8 -->
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num orange">08</span>
+                        <span class="step-title">Handle Missing Values</span>
+                        <span class="step-marks">marks: 3–8</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># Check for missing values</span>
 cars.<span class="fn">isnull</span>().<span class="fn">sum</span>()
 
 <span class="cm"># Method 1: Fill with column MEAN (for numeric)</span>
@@ -971,26 +956,26 @@ log.<span class="fn">dropna</span>(inplace=<span class="kw">True</span>)
 
 <span class="cm"># Confirm fixed</span>
 cars.<span class="fn">isnull</span>().<span class="fn">sum</span>()</code></pre>
-                            <div class="tip">
-                                <strong>ST1 2025:</strong> Fill with group mean
-                                (group by car name).
-                                <strong>ST1 2024:</strong> Drop all rows with
-                                missing values. Read which one the question
-                                asks!
-                            </div>
+                        <div class="tip">
+                            <strong>ST1 2025:</strong> Fill with group mean
+                            (group by car name).
+                            <strong>ST1 2024:</strong> Drop all rows with
+                            missing values. Read which one the question
+                            asks!
                         </div>
                     </div>
+                </div>
 
-                    <!-- STEP 9 -->
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num orange">09</span>
-                            <span class="step-title">Drop Columns</span>
-                            <span class="step-marks">marks: 1–2</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># Drop specific named columns</span>
+                <!-- STEP 9 -->
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num orange">09</span>
+                        <span class="step-title">Drop Columns</span>
+                        <span class="step-marks">marks: 1–2</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># Drop specific named columns</span>
 log.<span class="fn">drop</span>(columns=[<span class="st">'Date'</span>, <span class="st">'Time'</span>, <span class="st">'Flight #'</span>, <span class="st">'Route'</span>], inplace=<span class="kw">True</span>)
 
 <span class="cm"># Drop first N and last N columns WITHOUT naming them</span>
@@ -1000,21 +985,19 @@ customers = customers.<span class="fn">iloc</span>[:, <span class="nu">1</span>:
 cars.<span class="fn">drop</span>(columns=[<span class="st">'name'</span>], inplace=<span class="kw">True</span>)
 
 cars.<span class="fn">head</span>()</code></pre>
-                        </div>
                     </div>
+                </div>
 
-                    <!-- STEP 10 -->
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num orange">10</span>
-                            <span class="step-title"
-                                >Encode Text → Numbers</span
-                            >
-                            <span class="step-marks">marks: 6–7</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># ── Label Encoding: 2+ unique → [0,1,2,...] ──</span>
+                <!-- STEP 10 -->
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num orange">10</span>
+                        <span class="step-title">Encode Text → Numbers</span>
+                        <span class="step-marks">marks: 6–7</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># ── Label Encoding: 2+ unique → [0,1,2,...] ──</span>
 <span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> LabelEncoder
 le = <span class="cl">LabelEncoder</span>()
 
@@ -1037,55 +1020,51 @@ customers = pd.<span class="fn">get_dummies</span>(customers, columns=[<span cla
 
 <span class="cm"># Confirm no object types remain</span>
 customers.<span class="fn">select_dtypes</span>(include=<span class="st">'object'</span>).<span class="fn">columns</span></code></pre>
-                            <div class="warn-box">
-                                <strong>Rule:</strong> 2 unique values →
-                                LabelEncoder (binary). More than 2 → get_dummies
-                                (one-hot). Always check with
-                                <code>df.nunique()</code> first.
-                            </div>
+                        <div class="warn-box">
+                            <strong>Rule:</strong> 2 unique values →
+                            LabelEncoder (binary). More than 2 → get_dummies
+                            (one-hot). Always check with
+                            <code>df.nunique()</code> first.
                         </div>
                     </div>
+                </div>
 
-                    <!-- STEP 11 -->
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num orange">11</span>
-                            <span class="step-title"
-                                >Correlation Matrix & Heatmap</span
-                            >
-                            <span class="step-marks">marks: 3</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code>corr = cars.<span class="fn">corr</span>()
+                <!-- STEP 11 -->
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num orange">11</span>
+                        <span class="step-title">Correlation Matrix & Heatmap</span>
+                        <span class="step-marks">marks: 3</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code>corr = cars.<span class="fn">corr</span>()
 <span class="fn">print</span>(corr)
 
 plt.<span class="fn">figure</span>(figsize=(<span class="nu">12</span>,<span class="nu">8</span>))
 sns.<span class="fn">heatmap</span>(corr, annot=<span class="kw">True</span>, fmt=<span class="st">'.2f'</span>, cmap=<span class="st">'coolwarm'</span>)
 plt.<span class="fn">title</span>(<span class="st">'Correlation Matrix'</span>)
 plt.<span class="fn">show</span>()</code></pre>
-                            <div class="tip">
-                                <strong>Interpret:</strong> Values close to 1 =
-                                strong positive. Close to -1 = strong negative.
-                                Close to 0 = no correlation. Selling price &
-                                km_driven are often highly negatively
-                                correlated.
-                            </div>
+                        <div class="tip">
+                            <strong>Interpret:</strong> Values close to 1 =
+                            strong positive. Close to -1 = strong negative.
+                            Close to 0 = no correlation. Selling price &
+                            km_driven are often highly negatively
+                            correlated.
                         </div>
                     </div>
+                </div>
 
-                    <!-- STEP 12 -->
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num green">12</span>
-                            <span class="step-title"
-                                >Scale Features (MinMaxScaler)</span
-                            >
-                            <span class="step-marks">marks: 3</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> MinMaxScaler
+                <!-- STEP 12 -->
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num green">12</span>
+                        <span class="step-title">Scale Features (MinMaxScaler)</span>
+                        <span class="step-marks">marks: 3</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> MinMaxScaler
 
 scaler = <span class="cl">MinMaxScaler</span>()
 
@@ -1097,207 +1076,191 @@ cols_to_scale = [c <span class="kw">for</span> c <span class="kw">in</span> cars
 cars[cols_to_scale] = scaler.<span class="fn">fit_transform</span>(cars[cols_to_scale])
 
 cars.<span class="fn">head</span>()  <span class="cm"># values should now be between 0 and 1</span></code></pre>
-                            <div class="warn-box">
-                                <strong>Do NOT scale:</strong> the
-                                year/month/day columns or the target column (y).
-                                Scale only feature columns.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- STEP 13 -->
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num green">13</span>
-                            <span class="step-title"
-                                >Export Clean Data to CSV</span
-                            >
-                            <span class="step-marks">marks: 1</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code>cars.<span class="fn">to_csv</span>(<span class="st">'clean_cars.csv'</span>, index=<span class="kw">False</span>)
-<span class="fn">print</span>(<span class="st">"Saved!"</span>)</code></pre>
+                        <div class="warn-box">
+                            <strong>Do NOT scale:</strong> the
+                            year/month/day columns or the target column (y).
+                            Scale only feature columns.
                         </div>
                     </div>
                 </div>
-                <!-- /steps -->
-            </div>
-            <!-- /sec-st1 -->
 
-            <!-- ══════════════════════════════════════
+                <!-- STEP 13 -->
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num green">13</span>
+                        <span class="step-title">Export Clean Data to CSV</span>
+                        <span class="step-marks">marks: 1</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code>cars.<span class="fn">to_csv</span>(<span class="st">'clean_cars.csv'</span>, index=<span class="kw">False</span>)
+<span class="fn">print</span>(<span class="st">"Saved!"</span>)</code></pre>
+                    </div>
+                </div>
+            </div>
+            <!-- /steps -->
+        </div>
+        <!-- /sec-st1 -->
+
+        <!-- ══════════════════════════════════════
      ST2 THEORY (40 min closed book)
 ══════════════════════════════════════ -->
-            <div class="section" id="sec-st2-theory">
-                <div class="sec-header">
-                    <div class="time-badge">
-                        ⏱ 40 min · 20 marks · Closed Book — No laptop!
+        <div class="section" id="sec-st2-theory">
+            <div class="sec-header">
+                <div class="time-badge">
+                    ⏱ 40 min · 20 marks · Closed Book — No laptop!
+                </div>
+                <div class="sec-title">
+                    ST2 Theory — <span>Know These Cold</span>
+                </div>
+                <div class="sec-sub">
+                    Learning curves, k-Means, Decision Trees / Gini. Same
+                    questions appear every year.
+                </div>
+            </div>
+
+            <div class="steps">
+                <div class="step open">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">T1</span>
+                        <span class="step-title">Learning Curves — Reading & Comparing</span>
+                        <span class="step-marks">marks: 4 (every year)</span>
+                        <span class="step-arrow">▼</span>
                     </div>
-                    <div class="sec-title">
-                        ST2 Theory — <span>Know These Cold</span>
-                    </div>
-                    <div class="sec-sub">
-                        Learning curves, k-Means, Decision Trees / Gini. Same
-                        questions appear every year.
+                    <div class="step-body">
+                        <div class="two-col">
+                            <div class="theory-card">
+                                <h3>🔴 Bad Model (KNN in past papers)</h3>
+                                <ul>
+                                    <li>
+                                        Training score starts HIGH (~0.75+)
+                                    </li>
+                                    <li>
+                                        CV score starts LOW and stays LOW
+                                        (~0.55–0.60)
+                                    </li>
+                                    <li>
+                                        Big GAP between the two lines =
+                                        <strong>Overfitting / High
+                                            Variance</strong>
+                                    </li>
+                                    <li>
+                                        Model memorises training data, fails
+                                        on new data
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="theory-card">
+                                <h3>
+                                    🟢 Better Model (SVM in past papers)
+                                </h3>
+                                <ul>
+                                    <li>
+                                        Training and CV scores
+                                        <strong>converge</strong>
+                                    </li>
+                                    <li>
+                                        Both lines close together at end
+                                        (~0.65–0.70)
+                                    </li>
+                                    <li>
+                                        Small gap = model generalises well
+                                    </li>
+                                    <li>
+                                        Higher CV score = better real-world
+                                        predictions
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="tip" style="margin-top: 10px">
+                            <strong>Standard answer template:</strong> "The
+                            SVM model would provide better prediction
+                            results because its training score and
+                            cross-validation score converge and are close
+                            together, indicating that the model generalises
+                            well to unseen data. The KNN model shows a large
+                            gap between its training score and CV score,
+                            which is an indication of overfitting — the
+                            model performs well on training data but poorly
+                            on new data."
+                        </div>
                     </div>
                 </div>
 
-                <div class="steps">
-                    <div class="step open">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">T1</span>
-                            <span class="step-title"
-                                >Learning Curves — Reading & Comparing</span
-                            >
-                            <span class="step-marks"
-                                >marks: 4 (every year)</span
-                            >
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <div class="two-col">
-                                <div class="theory-card">
-                                    <h3>🔴 Bad Model (KNN in past papers)</h3>
-                                    <ul>
-                                        <li>
-                                            Training score starts HIGH (~0.75+)
-                                        </li>
-                                        <li>
-                                            CV score starts LOW and stays LOW
-                                            (~0.55–0.60)
-                                        </li>
-                                        <li>
-                                            Big GAP between the two lines =
-                                            <strong
-                                                >Overfitting / High
-                                                Variance</strong
-                                            >
-                                        </li>
-                                        <li>
-                                            Model memorises training data, fails
-                                            on new data
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="theory-card">
-                                    <h3>
-                                        🟢 Better Model (SVM in past papers)
-                                    </h3>
-                                    <ul>
-                                        <li>
-                                            Training and CV scores
-                                            <strong>converge</strong>
-                                        </li>
-                                        <li>
-                                            Both lines close together at end
-                                            (~0.65–0.70)
-                                        </li>
-                                        <li>
-                                            Small gap = model generalises well
-                                        </li>
-                                        <li>
-                                            Higher CV score = better real-world
-                                            predictions
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="tip" style="margin-top: 10px">
-                                <strong>Standard answer template:</strong> "The
-                                SVM model would provide better prediction
-                                results because its training score and
-                                cross-validation score converge and are close
-                                together, indicating that the model generalises
-                                well to unseen data. The KNN model shows a large
-                                gap between its training score and CV score,
-                                which is an indication of overfitting — the
-                                model performs well on training data but poorly
-                                on new data."
-                            </div>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">T2</span>
+                        <span class="step-title">k-Means Clustering Steps</span>
+                        <span class="step-marks">marks: 5</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <ol style="font-size: 0.84rem; line-height: 2">
+                            <li>
+                                <strong>Choose k</strong> — decide how many
+                                clusters to create
+                            </li>
+                            <li>
+                                <strong>Initialise centroids</strong> —
+                                randomly place k cluster centres in the data
+                                space
+                            </li>
+                            <li>
+                                <strong>Assign data points</strong> — each
+                                data point is assigned to the nearest
+                                centroid (using Euclidean distance)
+                            </li>
+                            <li>
+                                <strong>Update centroids</strong> —
+                                recalculate each centroid as the mean of all
+                                data points assigned to it
+                            </li>
+                            <li>
+                                <strong>Repeat</strong> steps 3–4 until
+                                centroids no longer move (convergence) or
+                                max iterations reached
+                            </li>
+                        </ol>
+                        <div class="tip">
+                            <strong>Silhouette score</strong> is used to
+                            find the best k. Higher silhouette = better
+                            defined clusters. Plot silhouette vs k and pick
+                            the k with highest score.
                         </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">T2</span>
-                            <span class="step-title"
-                                >k-Means Clustering Steps</span
-                            >
-                            <span class="step-marks">marks: 5</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <ol style="font-size: 0.84rem; line-height: 2">
-                                <li>
-                                    <strong>Choose k</strong> — decide how many
-                                    clusters to create
-                                </li>
-                                <li>
-                                    <strong>Initialise centroids</strong> —
-                                    randomly place k cluster centres in the data
-                                    space
-                                </li>
-                                <li>
-                                    <strong>Assign data points</strong> — each
-                                    data point is assigned to the nearest
-                                    centroid (using Euclidean distance)
-                                </li>
-                                <li>
-                                    <strong>Update centroids</strong> —
-                                    recalculate each centroid as the mean of all
-                                    data points assigned to it
-                                </li>
-                                <li>
-                                    <strong>Repeat</strong> steps 3–4 until
-                                    centroids no longer move (convergence) or
-                                    max iterations reached
-                                </li>
-                            </ol>
-                            <div class="tip">
-                                <strong>Silhouette score</strong> is used to
-                                find the best k. Higher silhouette = better
-                                defined clusters. Plot silhouette vs k and pick
-                                the k with highest score.
-                            </div>
-                        </div>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">T3</span>
+                        <span class="step-title">Gini Impurity Calculations (Decision
+                            Tree)</span>
+                        <span class="step-marks">marks: 11–12</span>
+                        <span class="step-arrow">▼</span>
                     </div>
-
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">T3</span>
-                            <span class="step-title"
-                                >Gini Impurity Calculations (Decision
-                                Tree)</span
-                            >
-                            <span class="step-marks">marks: 11–12</span>
-                            <span class="step-arrow">▼</span>
+                    <div class="step-body">
+                        <div class="formula">Gini(node) = 1 − Σ(pᵢ)²</div>
+                        <div class="formula">
+                            Weighted Gini(feature) = (n_left/n_total) ×
+                            Gini(left) + (n_right/n_total) × Gini(right)
                         </div>
-                        <div class="step-body">
-                            <div class="formula">Gini(node) = 1 − Σ(pᵢ)²</div>
-                            <div class="formula">
-                                Weighted Gini(feature) = (n_left/n_total) ×
-                                Gini(left) + (n_right/n_total) × Gini(right)
-                            </div>
-                            <p style="margin-top: 8px">
-                                <strong
-                                    >The feature with the LOWEST weighted Gini
-                                    is the root (best split).</strong
-                                >
-                            </p>
+                        <p style="margin-top: 8px">
+                            <strong>The feature with the LOWEST weighted Gini
+                                is the root (best split).</strong>
+                        </p>
 
-                            <div class="warn-box" style="margin-top: 8px">
-                                <strong
-                                    >Example from past papers (HBP vs Age&lt;48
-                                    → Heart Attack):</strong
-                                ><br />
-                                7 records total. Split on HBP: Yes=5, No=2.
-                                Split on Age&lt;48: Yes=5, No=2.<br />
-                                Calculate Gini for each child node, then
-                                weighted sum. The feature with lower weighted
-                                Gini is the root.
-                            </div>
+                        <div class="warn-box" style="margin-top: 8px">
+                            <strong>Example from past papers (HBP vs Age&lt;48
+                                → Heart Attack):</strong><br />
+                            7 records total. Split on HBP: Yes=5, No=2.
+                            Split on Age&lt;48: Yes=5, No=2.<br />
+                            Calculate Gini for each child node, then
+                            weighted sum. The feature with lower weighted
+                            Gini is the root.
+                        </div>
 
-                            <pre><code><span class="cm"># HBP split: Yes(5 records), No(2 records)</span>
+                        <pre><code><span class="cm"># HBP split: Yes(5 records), No(2 records)</span>
 <span class="cm"># HBP=Yes: HA=[Yes,No,Yes,No,Yes] = 3 Yes, 2 No → p_yes=3/5, p_no=2/5</span>
 gini_yes = <span class="nu">1</span> - ((<span class="nu">3</span>/<span class="nu">5</span>)**<span class="nu">2</span> + (<span class="nu">2</span>/<span class="nu">5</span>)**<span class="nu">2</span>)  <span class="cm"># = 1 - (0.36 + 0.16) = 0.48</span>
 
@@ -1307,166 +1270,158 @@ gini_no = <span class="nu">1</span> - ((<span class="nu">0</span>/<span class="n
 <span class="cm"># Weighted Gini for HBP</span>
 weighted_hbp = (<span class="nu">5</span>/<span class="nu">7</span>) * gini_yes + (<span class="nu">2</span>/<span class="nu">7</span>) * gini_no
 <span class="cm"># = (5/7)*0.48 + (2/7)*0 = 0.343</span></code></pre>
-                            <div class="tip">
-                                Do the same for Age&lt;48. The feature with the
-                                LOWER weighted Gini is chosen as root. Show ALL
-                                calculations for full marks.
-                            </div>
+                        <div class="tip">
+                            Do the same for Age&lt;48. The feature with the
+                            LOWER weighted Gini is chosen as root. Show ALL
+                            calculations for full marks.
                         </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">T4</span>
-                            <span class="step-title"
-                                >Theory Questions — Quick Answers</span
-                            >
-                            <span class="step-marks">marks: various</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <table class="data-table">
-                                <tr>
-                                    <th>Topic</th>
-                                    <th>Key Points to Write</th>
-                                </tr>
-                                <tr>
-                                    <td><strong>Data Science def.</strong></td>
-                                    <td>
-                                        Multidisciplinary field using scientific
-                                        methods, algorithms, statistics, and ML
-                                        to extract knowledge/insights from
-                                        structured and unstructured data for
-                                        decision making.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong
-                                            >Supervised vs Unsupervised</strong
-                                        >
-                                    </td>
-                                    <td>
-                                        Supervised: trained on LABELLED data,
-                                        predicts known output
-                                        (classification/regression).
-                                        Unsupervised: trained on UNLABELLED
-                                        data, finds hidden patterns
-                                        (clustering).
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>CRISP-DM stages</strong></td>
-                                    <td>
-                                        1. Business Understanding → 2. Data
-                                        Understanding → 3. Data Preparation → 4.
-                                        Modelling → 5. Evaluation → 6.
-                                        Deployment (draw the cycle diagram)
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Data Leakage</strong></td>
-                                    <td>
-                                        When information from the test set leaks
-                                        into training. Prevented by splitting
-                                        BEFORE any preprocessing/scaling, and
-                                        fitting scaler only on training data.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Gradient Descent</strong></td>
-                                    <td>
-                                        Optimisation algorithm that minimises a
-                                        cost/loss function by iteratively moving
-                                        in the direction of steepest descent
-                                        (negative gradient). Learning rate
-                                        controls step size.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Feature Creation</strong></td>
-                                    <td>
-                                        Creating new features from existing ones
-                                        (e.g. age from year, ratio of two
-                                        columns) to improve model performance.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Algorithm vs Model</strong></td>
-                                    <td>
-                                        Algorithm = the procedure/formula (e.g.
-                                        y=ax-e^ax). Model = the algorithm FIT to
-                                        data with learned parameter values.
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">T4</span>
+                        <span class="step-title">Theory Questions — Quick Answers</span>
+                        <span class="step-marks">marks: various</span>
+                        <span class="step-arrow">▼</span>
                     </div>
+                    <div class="step-body">
+                        <table class="data-table">
+                            <tr>
+                                <th>Topic</th>
+                                <th>Key Points to Write</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Data Science def.</strong></td>
+                                <td>
+                                    Multidisciplinary field using scientific
+                                    methods, algorithms, statistics, and ML
+                                    to extract knowledge/insights from
+                                    structured and unstructured data for
+                                    decision making.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Supervised vs Unsupervised</strong>
+                                </td>
+                                <td>
+                                    Supervised: trained on LABELLED data,
+                                    predicts known output
+                                    (classification/regression).
+                                    Unsupervised: trained on UNLABELLED
+                                    data, finds hidden patterns
+                                    (clustering).
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>CRISP-DM stages</strong></td>
+                                <td>
+                                    1. Business Understanding → 2. Data
+                                    Understanding → 3. Data Preparation → 4.
+                                    Modelling → 5. Evaluation → 6.
+                                    Deployment (draw the cycle diagram)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data Leakage</strong></td>
+                                <td>
+                                    When information from the test set leaks
+                                    into training. Prevented by splitting
+                                    BEFORE any preprocessing/scaling, and
+                                    fitting scaler only on training data.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Gradient Descent</strong></td>
+                                <td>
+                                    Optimisation algorithm that minimises a
+                                    cost/loss function by iteratively moving
+                                    in the direction of steepest descent
+                                    (negative gradient). Learning rate
+                                    controls step size.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Feature Creation</strong></td>
+                                <td>
+                                    Creating new features from existing ones
+                                    (e.g. age from year, ratio of two
+                                    columns) to improve model performance.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Algorithm vs Model</strong></td>
+                                <td>
+                                    Algorithm = the procedure/formula (e.g.
+                                    y=ax-e^ax). Model = the algorithm FIT to
+                                    data with learned parameter values.
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">T5</span>
-                            <span class="step-title"
-                                >Precision / Recall / F1 — Manual
-                                Calculation</span
-                            >
-                            <span class="step-marks">marks: 6 (ST1 2024)</span>
-                            <span class="step-arrow">▼</span>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">T5</span>
+                        <span class="step-title">Precision / Recall / F1 — Manual
+                            Calculation</span>
+                        <span class="step-marks">marks: 6 (ST1 2024)</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <div class="formula">
+                            Precision = TP / (TP + FP)
                         </div>
-                        <div class="step-body">
-                            <div class="formula">
-                                Precision = TP / (TP + FP)
-                            </div>
-                            <div class="formula">Recall = TP / (TP + FN)</div>
-                            <div class="formula">
-                                F1 = 2 × (Precision × Recall) / (Precision +
-                                Recall)
-                            </div>
-                            <div class="warn-box" style="margin-top: 8px">
-                                <strong>Example (ST1 2024):</strong> 12 actually
-                                at risk. Model flags 8. Of those 8, 3 were wrong
-                                (FP).<br />
-                                → TP = 8 − 3 = 5 &nbsp;|&nbsp; FP = 3
-                                &nbsp;|&nbsp; FN = 12 − 5 = 7<br />
-                                → Precision = 5/(5+3) = <strong>0.625</strong
-                                ><br />
-                                → Recall = 5/(5+7) = <strong>0.417</strong
-                                ><br />
-                                → F1 = 2×(0.625×0.417)/(0.625+0.417) =
-                                <strong>0.5</strong>
-                            </div>
+                        <div class="formula">Recall = TP / (TP + FN)</div>
+                        <div class="formula">
+                            F1 = 2 × (Precision × Recall) / (Precision +
+                            Recall)
+                        </div>
+                        <div class="warn-box" style="margin-top: 8px">
+                            <strong>Example (ST1 2024):</strong> 12 actually
+                            at risk. Model flags 8. Of those 8, 3 were wrong
+                            (FP).<br />
+                            → TP = 8 − 3 = 5 &nbsp;|&nbsp; FP = 3
+                            &nbsp;|&nbsp; FN = 12 − 5 = 7<br />
+                            → Precision = 5/(5+3) = <strong>0.625</strong><br />
+                            → Recall = 5/(5+7) = <strong>0.417</strong><br />
+                            → F1 = 2×(0.625×0.417)/(0.625+0.417) =
+                            <strong>0.5</strong>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- ══════════════════════════════════════
+        <!-- ══════════════════════════════════════
      ST2 PRACTICAL — FULL ML PIPELINE
 ══════════════════════════════════════ -->
-            <div class="section" id="sec-st2-practical">
-                <div class="sec-header">
-                    <div class="time-badge">
-                        ⏱ 140 min · 70 marks · Open Book
-                    </div>
-                    <div class="sec-title">
-                        ST2 Practical — <span>Full ML Pipeline</span>
-                    </div>
-                    <div class="sec-sub">
-                        Preprocessing → Balance → Encode → Split → Train
-                        classifiers → Evaluate. Every step must show output.
-                    </div>
+        <div class="section" id="sec-st2-practical">
+            <div class="sec-header">
+                <div class="time-badge">
+                    ⏱ 140 min · 70 marks · Open Book
                 </div>
+                <div class="sec-title">
+                    ST2 Practical — <span>Full ML Pipeline</span>
+                </div>
+                <div class="sec-sub">
+                    Preprocessing → Balance → Encode → Split → Train
+                    classifiers → Evaluate. Every step must show output.
+                </div>
+            </div>
 
-                <div class="steps">
-                    <div class="step open">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">P1</span>
-                            <span class="step-title">Import & Inspect</span>
-                            <span class="step-marks">marks: ~5</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
+            <div class="steps">
+                <div class="step open">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">P1</span>
+                        <span class="step-title">Import & Inspect</span>
+                        <span class="step-marks">marks: ~5</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
 <span class="kw">import</span> numpy <span class="kw">as</span> np
 <span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
 <span class="kw">import</span> seaborn <span class="kw">as</span> sns
@@ -1485,42 +1440,38 @@ customers = pd.<span class="fn">read_csv</span>(<span class="st">'credit_card_cu
 customers.<span class="fn">tail</span>(<span class="nu">20</span>)
 customers.<span class="fn">dtypes</span>
 customers.<span class="fn">nunique</span>()</code></pre>
-                        </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">P2</span>
-                            <span class="step-title"
-                                >Drop Columns (Without Naming)</span
-                            >
-                            <span class="step-marks">marks: 2</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># Drop first 1 column and last 7 columns (without naming them)</span>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">P2</span>
+                        <span class="step-title">Drop Columns (Without Naming)</span>
+                        <span class="step-marks">marks: 2</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># Drop first 1 column and last 7 columns (without naming them)</span>
 customers = customers.<span class="fn">iloc</span>[:, <span class="nu">1</span>:-<span class="nu">7</span>]
 customers.<span class="fn">head</span>()</code></pre>
-                            <div class="tip">
-                                For "discard first N and last M":
-                                <code>df.iloc[:, N:-M]</code>. If just last M:
-                                <code>df.iloc[:, :-M]</code>. If just first N:
-                                <code>df.iloc[:, N:]</code>
-                            </div>
+                        <div class="tip">
+                            For "discard first N and last M":
+                            <code>df.iloc[:, N:-M]</code>. If just last M:
+                            <code>df.iloc[:, :-M]</code>. If just first N:
+                            <code>df.iloc[:, N:]</code>
                         </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">P3</span>
-                            <span class="step-title"
-                                >Statistical Summary & EDA</span
-                            >
-                            <span class="step-marks">marks: 3–4</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code>customers.<span class="fn">describe</span>(include=<span class="st">'all'</span>)
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">P3</span>
+                        <span class="step-title">Statistical Summary & EDA</span>
+                        <span class="step-marks">marks: 3–4</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code>customers.<span class="fn">describe</span>(include=<span class="st">'all'</span>)
 
 <span class="cm"># Percentage with income >= R120K per education group</span>
 total = customers.<span class="fn">groupby</span>(<span class="st">'Education_Level'</span>).<span class="fn">size</span>()
@@ -1528,20 +1479,18 @@ rich  = customers[customers[<span class="st">'Income_Category'</span>] == <span 
         <span class="fn">groupby</span>(<span class="st">'Education_Level'</span>).<span class="fn">size</span>()
 pct = (rich / total * <span class="nu">100</span>).<span class="fn">round</span>(<span class="nu">2</span>)
 <span class="fn">print</span>(pct[[<span class="st">'Uneducated'</span>, <span class="st">'Doctorate'</span>]])</code></pre>
-                        </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">P4</span>
-                            <span class="step-title"
-                                >Seaborn Visualisations</span
-                            >
-                            <span class="step-marks">marks: 9</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># Category/count plot</span>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">P4</span>
+                        <span class="step-title">Seaborn Visualisations</span>
+                        <span class="step-marks">marks: 9</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># Category/count plot</span>
 plt.<span class="fn">figure</span>(figsize=(<span class="nu">10</span>,<span class="nu">6</span>))
 sns.<span class="fn">countplot</span>(x=<span class="st">'Education_Level'</span>, hue=<span class="st">'Card_Category'</span>, data=customers)
 plt.<span class="fn">title</span>(<span class="st">'Card Category per Education Level'</span>)
@@ -1566,20 +1515,18 @@ fig, axes = plt.<span class="fn">subplots</span>(<span class="nu">1</span>, <spa
     sns.<span class="fn">boxplot</span>(y=col, data=df, ax=ax)
 plt.<span class="fn">tight_layout</span>()
 plt.<span class="fn">show</span>()</code></pre>
-                        </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num orange">P5</span>
-                            <span class="step-title"
-                                >Check Class Balance & Pie Chart</span
-                            >
-                            <span class="step-marks">marks: 4–5</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># Count each class</span>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num orange">P5</span>
+                        <span class="step-title">Check Class Balance & Pie Chart</span>
+                        <span class="step-marks">marks: 4–5</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># Count each class</span>
 <span class="fn">print</span>(customers[<span class="st">'Attrition_Flag'</span>].<span class="fn">value_counts</span>())
 
 <span class="cm"># Pie chart with 3-decimal percentages</span>
@@ -1589,20 +1536,18 @@ plt.<span class="fn">pie</span>(counts, labels=counts.index,
         autopct=<span class="kw">lambda</span> p: <span class="st">f'</span>{p:<span class="nu">.3f</span>}<span class="st">%'</span>, startangle=<span class="nu">90</span>)
 plt.<span class="fn">title</span>(<span class="st">'Customer Attrition Balance'</span>)
 plt.<span class="fn">show</span>()</code></pre>
-                        </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num orange">P6</span>
-                            <span class="step-title"
-                                >Balance Data — Undersampling</span
-                            >
-                            <span class="step-marks">marks: 5</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># Undersample the majority class to match minority</span>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num orange">P6</span>
+                        <span class="step-title">Balance Data — Undersampling</span>
+                        <span class="step-marks">marks: 5</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># Undersample the majority class to match minority</span>
 existing  = customers[customers[<span class="st">'Attrition_Flag'</span>] == <span class="st">'Existing Customer'</span>]
 attrited  = customers[customers[<span class="st">'Attrition_Flag'</span>] == <span class="st">'Attrited Customer'</span>]
 
@@ -1619,27 +1564,25 @@ customers_resampled = pd.<span class="fn">concat</span>([existing_sampled, attri
 counts2 = customers_resampled[<span class="st">'Attrition_Flag'</span>].<span class="fn">value_counts</span>()
 plt.<span class="fn">pie</span>(counts2, labels=counts2.index, autopct=<span class="kw">lambda</span> p:<span class="st">f'</span>{p:<span class="nu">.3f</span>}<span class="st">%'</span>)
 plt.<span class="fn">show</span>()</code></pre>
-                            <div class="tip">
-                                <strong>Undersampling</strong> = reduce the
-                                majority class. Used when data is imbalanced
-                                (e.g. 84% existing vs 16% attrited). We don't
-                                want the model to just predict "Existing" every
-                                time.
-                            </div>
+                        <div class="tip">
+                            <strong>Undersampling</strong> = reduce the
+                            majority class. Used when data is imbalanced
+                            (e.g. 84% existing vs 16% attrited). We don't
+                            want the model to just predict "Existing" every
+                            time.
                         </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num orange">P7</span>
-                            <span class="step-title"
-                                >Encode Text → Numeric</span
-                            >
-                            <span class="step-marks">marks: 7</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code>le = <span class="cl">LabelEncoder</span>()
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num orange">P7</span>
+                        <span class="step-title">Encode Text → Numeric</span>
+                        <span class="step-marks">marks: 7</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code>le = <span class="cl">LabelEncoder</span>()
 
 <span class="cm"># Binary columns (exactly 2 unique) → [0, 1]</span>
 binary_cols = [col <span class="kw">for</span> col <span class="kw">in</span> customers_resampled.columns
@@ -1657,20 +1600,18 @@ customers_resampled = pd.<span class="fn">get_dummies</span>(customers_resampled
 <span class="cm"># Verify — no object columns remain</span>
 <span class="fn">print</span>(customers_resampled.<span class="fn">select_dtypes</span>(include=<span class="st">'object'</span>).columns)
 customers_resampled.<span class="fn">head</span>()</code></pre>
-                        </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num orange">P8</span>
-                            <span class="step-title"
-                                >Define X & y — Train/Test Split</span
-                            >
-                            <span class="step-marks">marks: 7</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># X = all features, y = target column</span>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num orange">P8</span>
+                        <span class="step-title">Define X & y — Train/Test Split</span>
+                        <span class="step-marks">marks: 7</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># X = all features, y = target column</span>
 X = customers_resampled.<span class="fn">drop</span>(columns=[<span class="st">'Attrition_Flag'</span>])  <span class="cm"># or the encoded version</span>
 y = customers_resampled[<span class="st">'Attrition_Flag'</span>]
 
@@ -1684,31 +1625,27 @@ X_train, X_test, y_train, y_test = <span class="fn">train_test_split</span>(
 
 <span class="fn">print</span>(<span class="st">"X_train shape:"</span>, X_train.<span class="fn">shape</span>)
 <span class="fn">print</span>(<span class="st">"X_test  shape:"</span>, X_test.<span class="fn">shape</span>)</code></pre>
-                            <div class="danger-box">
-                                <strong>⚠️ LEAKAGE WARNING:</strong> If scaling
-                                after split, fit the scaler ONLY on X_train,
-                                then transform both X_train and X_test.<br />
-                                <code
-                                    >scaler.fit(X_train) → X_train =
+                        <div class="danger-box">
+                            <strong>⚠️ LEAKAGE WARNING:</strong> If scaling
+                            after split, fit the scaler ONLY on X_train,
+                            then transform both X_train and X_test.<br />
+                            <code>scaler.fit(X_train) → X_train =
                                     scaler.transform(X_train) → X_test =
-                                    scaler.transform(X_test)</code
-                                >
-                            </div>
+                                    scaler.transform(X_test)</code>
                         </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num green">P9</span>
-                            <span class="step-title"
-                                >Train Classifiers + k-Fold Cross
-                                Validation</span
-                            >
-                            <span class="step-marks">marks: 8–10</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num green">P9</span>
+                        <span class="step-title">Train Classifiers + k-Fold Cross
+                            Validation</span>
+                        <span class="step-marks">marks: 8–10</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score
 
 <span class="cm"># Define classifiers</span>
 models = {
@@ -1727,20 +1664,18 @@ results = {}
 
 <span class="cm"># Show as dataframe</span>
 pd.<span class="cl">DataFrame</span>(results).<span class="fn">T</span></code></pre>
-                        </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num green">P10</span>
-                            <span class="step-title">Draw Learning Curves</span>
-                            <span class="step-marks"
-                                >marks: included above</span
-                            >
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> learning_curve
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num green">P10</span>
+                        <span class="step-title">Draw Learning Curves</span>
+                        <span class="step-marks">marks: included above</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> learning_curve
 
 <span class="kw">def</span> <span class="fn">plot_learning_curve</span>(model, name, X, y):
     train_sizes, train_scores, cv_scores = <span class="fn">learning_curve</span>(
@@ -1758,20 +1693,18 @@ pd.<span class="cl">DataFrame</span>(results).<span class="fn">T</span></code></
 
 <span class="kw">for</span> name, model <span class="kw">in</span> models.<span class="fn">items</span>():
     <span class="fn">plot_learning_curve</span>(model, name, X_train, y_train)</code></pre>
-                        </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num green">P11</span>
-                            <span class="step-title"
-                                >Select Best Model & Evaluate</span
-                            >
-                            <span class="step-marks">marks: 3–7</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm"># Identify best model (highest F1 from results dict above)</span>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num green">P11</span>
+                        <span class="step-title">Select Best Model & Evaluate</span>
+                        <span class="step-marks">marks: 3–7</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <pre><code><span class="cm"># Identify best model (highest F1 from results dict above)</span>
 best_name  = <span class="fn">max</span>(results, key=<span class="kw">lambda</span> k: results[k][<span class="st">'F1'</span>])
 best_model = models[best_name]
 <span class="fn">print</span>(<span class="st">f"Best model: </span>{best_name}<span class="st">"</span>)
@@ -1784,170 +1717,164 @@ y_pred = best_model.<span class="fn">predict</span>(X_test)
 <span class="fn">print</span>(<span class="st">"Test Accuracy:"</span>, <span class="fn">accuracy_score</span>(y_test, y_pred))
 <span class="fn">print</span>(<span class="st">"\nConfusion Matrix:\n"</span>, <span class="fn">confusion_matrix</span>(y_test, y_pred))
 <span class="fn">print</span>(<span class="st">"\nClassification Report:\n"</span>, <span class="fn">classification_report</span>(y_test, y_pred))</code></pre>
-                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- ══════════════════════════════════════
+        <!-- ══════════════════════════════════════
      INTERPRETATION GUIDE
 ══════════════════════════════════════ -->
-            <div class="section" id="sec-interpret">
-                <div class="sec-header">
-                    <div class="time-badge">
-                        📝 Print answers directly in notebook using print()
+        <div class="section" id="sec-interpret">
+            <div class="sec-header">
+                <div class="time-badge">
+                    📝 Print answers directly in notebook using print()
+                </div>
+                <div class="sec-title">
+                    How to <span>Interpret Results</span>
+                </div>
+                <div class="sec-sub">
+                    Use these templates to answer the "discuss / explain"
+                    questions in the notebook. Always reference actual
+                    numbers from your output.
+                </div>
+            </div>
+
+            <div class="steps">
+                <div class="step open">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">I1</span>
+                        <span class="step-title">Training Accuracy vs Testing Accuracy</span>
+                        <span class="step-marks">marks: 1–2</span>
+                        <span class="step-arrow">▼</span>
                     </div>
-                    <div class="sec-title">
-                        How to <span>Interpret Results</span>
-                    </div>
-                    <div class="sec-sub">
-                        Use these templates to answer the "discuss / explain"
-                        questions in the notebook. Always reference actual
-                        numbers from your output.
+                    <div class="step-body">
+                        <table class="data-table">
+                            <tr>
+                                <th>Situation</th>
+                                <th>What it means</th>
+                                <th>What to write</th>
+                            </tr>
+                            <tr>
+                                <td>Train ≈ Test (both high)</td>
+                                <td>Model generalises well</td>
+                                <td>
+                                    "The training accuracy of X% is close to
+                                    the test accuracy of Y%, indicating the
+                                    model generalises well to unseen data
+                                    and is not overfitting."
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Train &gt;&gt; Test</td>
+                                <td>Overfitting</td>
+                                <td>
+                                    "The training accuracy of X% is
+                                    significantly higher than the test
+                                    accuracy of Y%, suggesting the model is
+                                    overfitting — it has memorised the
+                                    training data but struggles with new
+                                    data."
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Both low</td>
+                                <td>Underfitting</td>
+                                <td>
+                                    "Both scores are low, indicating the
+                                    model is underfitting and has not
+                                    learned the patterns in the data
+                                    sufficiently."
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
 
-                <div class="steps">
-                    <div class="step open">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">I1</span>
-                            <span class="step-title"
-                                >Training Accuracy vs Testing Accuracy</span
-                            >
-                            <span class="step-marks">marks: 1–2</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <table class="data-table">
-                                <tr>
-                                    <th>Situation</th>
-                                    <th>What it means</th>
-                                    <th>What to write</th>
-                                </tr>
-                                <tr>
-                                    <td>Train ≈ Test (both high)</td>
-                                    <td>Model generalises well</td>
-                                    <td>
-                                        "The training accuracy of X% is close to
-                                        the test accuracy of Y%, indicating the
-                                        model generalises well to unseen data
-                                        and is not overfitting."
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Train &gt;&gt; Test</td>
-                                    <td>Overfitting</td>
-                                    <td>
-                                        "The training accuracy of X% is
-                                        significantly higher than the test
-                                        accuracy of Y%, suggesting the model is
-                                        overfitting — it has memorised the
-                                        training data but struggles with new
-                                        data."
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Both low</td>
-                                    <td>Underfitting</td>
-                                    <td>
-                                        "Both scores are low, indicating the
-                                        model is underfitting and has not
-                                        learned the patterns in the data
-                                        sufficiently."
-                                    </td>
-                                </tr>
-                            </table>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">I2</span>
+                        <span class="step-title">Precision, Recall & F1-Score</span>
+                        <span class="step-marks">marks: 2–3</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <table class="data-table">
+                            <tr>
+                                <th>Metric</th>
+                                <th>Definition</th>
+                                <th>Template answer</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Precision</strong></td>
+                                <td>
+                                    Of all predicted positives, how many
+                                    were actually positive? <br />TP / (TP +
+                                    FP)
+                                </td>
+                                <td>
+                                    "A precision of X means that X% of the
+                                    customers predicted to leave actually
+                                    left. A high precision means few false
+                                    alarms."
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Recall</strong></td>
+                                <td>
+                                    Of all actual positives, how many did
+                                    the model find? <br />TP / (TP + FN)
+                                </td>
+                                <td>
+                                    "A recall of X means the model correctly
+                                    identified X% of all actual churned
+                                    customers. A low recall means many
+                                    churners were missed."
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>F1-Score</strong></td>
+                                <td>
+                                    Harmonic mean of Precision and Recall.
+                                    Best single metric for imbalanced data.
+                                </td>
+                                <td>
+                                    "The F1-score of X represents the
+                                    balance between precision and recall. It
+                                    is the preferred metric when the dataset
+                                    is imbalanced."
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Support</strong></td>
+                                <td>
+                                    Number of actual samples in each class
+                                    in the test set.
+                                </td>
+                                <td>
+                                    "Support shows how many test samples
+                                    belong to each class."
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="tip">
+                            <strong>Good F1 = close to 1.0.</strong> Above
+                            0.80 is generally good. The question always says
+                            "select the model with highest F1" — don't pick
+                            by accuracy.
                         </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">I2</span>
-                            <span class="step-title"
-                                >Precision, Recall & F1-Score</span
-                            >
-                            <span class="step-marks">marks: 2–3</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <table class="data-table">
-                                <tr>
-                                    <th>Metric</th>
-                                    <th>Definition</th>
-                                    <th>Template answer</th>
-                                </tr>
-                                <tr>
-                                    <td><strong>Precision</strong></td>
-                                    <td>
-                                        Of all predicted positives, how many
-                                        were actually positive? <br />TP / (TP +
-                                        FP)
-                                    </td>
-                                    <td>
-                                        "A precision of X means that X% of the
-                                        customers predicted to leave actually
-                                        left. A high precision means few false
-                                        alarms."
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Recall</strong></td>
-                                    <td>
-                                        Of all actual positives, how many did
-                                        the model find? <br />TP / (TP + FN)
-                                    </td>
-                                    <td>
-                                        "A recall of X means the model correctly
-                                        identified X% of all actual churned
-                                        customers. A low recall means many
-                                        churners were missed."
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>F1-Score</strong></td>
-                                    <td>
-                                        Harmonic mean of Precision and Recall.
-                                        Best single metric for imbalanced data.
-                                    </td>
-                                    <td>
-                                        "The F1-score of X represents the
-                                        balance between precision and recall. It
-                                        is the preferred metric when the dataset
-                                        is imbalanced."
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Support</strong></td>
-                                    <td>
-                                        Number of actual samples in each class
-                                        in the test set.
-                                    </td>
-                                    <td>
-                                        "Support shows how many test samples
-                                        belong to each class."
-                                    </td>
-                                </tr>
-                            </table>
-                            <div class="tip">
-                                <strong>Good F1 = close to 1.0.</strong> Above
-                                0.80 is generally good. The question always says
-                                "select the model with highest F1" — don't pick
-                                by accuracy.
-                            </div>
-                        </div>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">I3</span>
+                        <span class="step-title">Confusion Matrix — Reading It</span>
+                        <span class="step-marks">theory</span>
+                        <span class="step-arrow">▼</span>
                     </div>
-
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">I3</span>
-                            <span class="step-title"
-                                >Confusion Matrix — Reading It</span
-                            >
-                            <span class="step-marks">theory</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <pre><code><span class="cm">#          Predicted: No   Predicted: Yes</span>
+                    <div class="step-body">
+                        <pre><code><span class="cm">#          Predicted: No   Predicted: Yes</span>
 <span class="cm"># Actual: No    [TN]            [FP]</span>
 <span class="cm"># Actual: Yes   [FN]            [TP]</span>
 
@@ -1955,208 +1882,200 @@ y_pred = best_model.<span class="fn">predict</span>(X_test)
 <span class="cm"># TP = True Positive  (correctly predicted YES)</span>
 <span class="cm"># FP = False Positive (predicted YES, actually NO) — Type I Error</span>
 <span class="cm"># FN = False Negative (predicted NO, actually YES) — Type II Error</span></code></pre>
-                            <div class="warn-box">
-                                <strong>In a churn model:</strong> FN is
-                                dangerous — a customer who will leave that we
-                                miss. High recall = fewer FN. In medical models,
-                                FN = missed diagnosis = most costly.
-                            </div>
+                        <div class="warn-box">
+                            <strong>In a churn model:</strong> FN is
+                            dangerous — a customer who will leave that we
+                            miss. High recall = fewer FN. In medical models,
+                            FN = missed diagnosis = most costly.
                         </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">I4</span>
-                            <span class="step-title"
-                                >Statistical Summary — What to Say</span
-                            >
-                            <span class="step-marks">marks: 2–5</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <table class="data-table">
-                                <tr>
-                                    <th>Stat field</th>
-                                    <th>What it tells you</th>
-                                </tr>
-                                <tr>
-                                    <td>count</td>
-                                    <td>
-                                        How many non-null values — if less than
-                                        total rows, there are missing values
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>unique</td>
-                                    <td>
-                                        Number of distinct values in a text
-                                        column
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>top</td>
-                                    <td>
-                                        Most frequent value in a text column
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>freq</td>
-                                    <td>
-                                        How many times the top value appears
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>mean</td>
-                                    <td>
-                                        Average — outliers can pull this far
-                                        from median
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>std</td>
-                                    <td>
-                                        Standard deviation — how spread out
-                                        values are
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>min/max</td>
-                                    <td>
-                                        Extreme values — check for outliers
-                                        (e.g. age = 999)
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>25%/50%/75%</td>
-                                    <td>
-                                        Quartiles — 50% is median. Large gap
-                                        between 75% and max = outliers
-                                    </td>
-                                </tr>
-                            </table>
-                            <div class="tip">
-                                <strong>Example answer:</strong> "From the
-                                statistical summary, Education_Level has 6
-                                unique values with 'Graduate' being the most
-                                common (top), appearing 3128 times (freq). This
-                                suggests the majority of customers are
-                                graduates."
-                            </div>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">I4</span>
+                        <span class="step-title">Statistical Summary — What to Say</span>
+                        <span class="step-marks">marks: 2–5</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <table class="data-table">
+                            <tr>
+                                <th>Stat field</th>
+                                <th>What it tells you</th>
+                            </tr>
+                            <tr>
+                                <td>count</td>
+                                <td>
+                                    How many non-null values — if less than
+                                    total rows, there are missing values
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>unique</td>
+                                <td>
+                                    Number of distinct values in a text
+                                    column
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>top</td>
+                                <td>
+                                    Most frequent value in a text column
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>freq</td>
+                                <td>
+                                    How many times the top value appears
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>mean</td>
+                                <td>
+                                    Average — outliers can pull this far
+                                    from median
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>std</td>
+                                <td>
+                                    Standard deviation — how spread out
+                                    values are
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>min/max</td>
+                                <td>
+                                    Extreme values — check for outliers
+                                    (e.g. age = 999)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>25%/50%/75%</td>
+                                <td>
+                                    Quartiles — 50% is median. Large gap
+                                    between 75% and max = outliers
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="tip">
+                            <strong>Example answer:</strong> "From the
+                            statistical summary, Education_Level has 6
+                            unique values with 'Graduate' being the most
+                            common (top), appearing 3128 times (freq). This
+                            suggests the majority of customers are
+                            graduates."
                         </div>
                     </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">I5</span>
-                            <span class="step-title"
-                                >Correlation Values — What to Say</span
-                            >
-                            <span class="step-marks">marks: 2</span>
-                            <span class="step-arrow">▼</span>
-                        </div>
-                        <div class="step-body">
-                            <p>Values range from -1 to 1:</p>
-                            <table class="data-table">
-                                <tr>
-                                    <th>Value</th>
-                                    <th>Meaning</th>
-                                    <th>Example sentence</th>
-                                </tr>
-                                <tr>
-                                    <td>0.8 to 1.0</td>
-                                    <td>Strong positive</td>
-                                    <td>
-                                        "Credit_Limit and Avg_Open_To_Buy have a
-                                        strong positive correlation of 0.99,
-                                        meaning as the credit limit increases,
-                                        the available credit also increases
-                                        proportionally."
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>-0.8 to -1.0</td>
-                                    <td>Strong negative</td>
-                                    <td>
-                                        "Km_driven and selling_price have a
-                                        strong negative correlation, meaning
-                                        higher mileage vehicles sell for less."
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Close to 0</td>
-                                    <td>No correlation</td>
-                                    <td>
-                                        "There is little to no correlation
-                                        between age and income category."
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">I5</span>
+                        <span class="step-title">Correlation Values — What to Say</span>
+                        <span class="step-marks">marks: 2</span>
+                        <span class="step-arrow">▼</span>
                     </div>
+                    <div class="step-body">
+                        <p>Values range from -1 to 1:</p>
+                        <table class="data-table">
+                            <tr>
+                                <th>Value</th>
+                                <th>Meaning</th>
+                                <th>Example sentence</th>
+                            </tr>
+                            <tr>
+                                <td>0.8 to 1.0</td>
+                                <td>Strong positive</td>
+                                <td>
+                                    "Credit_Limit and Avg_Open_To_Buy have a
+                                    strong positive correlation of 0.99,
+                                    meaning as the credit limit increases,
+                                    the available credit also increases
+                                    proportionally."
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>-0.8 to -1.0</td>
+                                <td>Strong negative</td>
+                                <td>
+                                    "Km_driven and selling_price have a
+                                    strong negative correlation, meaning
+                                    higher mileage vehicles sell for less."
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Close to 0</td>
+                                <td>No correlation</td>
+                                <td>
+                                    "There is little to no correlation
+                                    between age and income category."
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
 
-                    <div class="step">
-                        <div class="step-head" onclick="toggleStep(this)">
-                            <span class="step-num">I6</span>
-                            <span class="step-title"
-                                >Outliers / Boxplots — What to Say</span
-                            >
-                            <span class="step-marks">marks: 1–3</span>
-                            <span class="step-arrow">▼</span>
+                <div class="step">
+                    <div class="step-head" onclick="toggleStep(this)">
+                        <span class="step-num">I6</span>
+                        <span class="step-title">Outliers / Boxplots — What to Say</span>
+                        <span class="step-marks">marks: 1–3</span>
+                        <span class="step-arrow">▼</span>
+                    </div>
+                    <div class="step-body">
+                        <div class="tip">
+                            <strong>Spotting outliers:</strong> Data points
+                            outside the whiskers of a boxplot are outliers.
+                            The IQR method: any value &lt; Q1 - 1.5×IQR or
+                            &gt; Q3 + 1.5×IQR is an outlier.
                         </div>
-                        <div class="step-body">
-                            <div class="tip">
-                                <strong>Spotting outliers:</strong> Data points
-                                outside the whiskers of a boxplot are outliers.
-                                The IQR method: any value &lt; Q1 - 1.5×IQR or
-                                &gt; Q3 + 1.5×IQR is an outlier.
-                            </div>
-                            <pre><code><span class="cm"># Fix outliers using IQR method</span>
+                        <pre><code><span class="cm"># Fix outliers using IQR method</span>
 <span class="kw">for</span> col <span class="kw">in</span> [<span class="st">'Weight'</span>,<span class="st">'Length'</span>,<span class="st">'Width'</span>,<span class="st">'Thickness'</span>]:
     Q1  = df[col].<span class="fn">quantile</span>(<span class="nu">0.25</span>)
     Q3  = df[col].<span class="fn">quantile</span>(<span class="nu">0.75</span>)
     IQR = Q3 - Q1
     df  = df[(df[col] >= Q1 - <span class="nu">1.5</span>*IQR) & (df[col] <= Q3 + <span class="nu">1.5</span>*IQR)]
 <span class="fn">print</span>(<span class="st">"Shape after outlier removal:"</span>, df.<span class="fn">shape</span>)</code></pre>
-                            <p>
-                                <strong>Why IQR?</strong> It is a robust method
-                                that does not assume a specific distribution. It
-                                removes extreme values that could negatively
-                                affect model training.
-                            </p>
-                        </div>
+                        <p>
+                            <strong>Why IQR?</strong> It is a robust method
+                            that does not assume a specific distribution. It
+                            removes extreme values that could negatively
+                            affect model training.
+                        </p>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- ══════════════════════════════════════
+        <!-- ══════════════════════════════════════
      QUICK CODE SNIPPETS
 ══════════════════════════════════════ -->
-            <div class="section" id="sec-snippets">
-                <div class="sec-header">
-                    <div class="time-badge">
-                        ⚡ Fast lookup — copy & paste during test
-                    </div>
-                    <div class="sec-title">
-                        Quick <span>Code Snippets</span>
-                    </div>
-                    <div class="sec-sub">
-                        Everything you might need in one place. Ctrl+F or use
-                        the search bar above.
-                    </div>
+        <div class="section" id="sec-snippets">
+            <div class="sec-header">
+                <div class="time-badge">
+                    ⚡ Fast lookup — copy & paste during test
                 </div>
+                <div class="sec-title">
+                    Quick <span>Code Snippets</span>
+                </div>
+                <div class="sec-sub">
+                    Everything you might need in one place. Ctrl+F or use
+                    the search bar above.
+                </div>
+            </div>
 
-                <div class="two-col">
-                    <div class="steps">
-                        <div class="step open">
-                            <div class="step-head" onclick="toggleStep(this)">
-                                <span class="step-num yellow">Q1</span>
-                                <span class="step-title"
-                                    >Percentages & Filtering</span
-                                >
-                                <span class="step-arrow">▼</span>
-                            </div>
-                            <div class="step-body">
-                                <pre><code><span class="cm"># % of SAA crashes</span>
+            <div class="two-col">
+                <div class="steps">
+                    <div class="step open">
+                        <div class="step-head" onclick="toggleStep(this)">
+                            <span class="step-num yellow">Q1</span>
+                            <span class="step-title">Percentages & Filtering</span>
+                            <span class="step-arrow">▼</span>
+                        </div>
+                        <div class="step-body">
+                            <pre><code><span class="cm"># % of SAA crashes</span>
 saa = log[log[<span class="st">'Airline_Operator'</span>] == <span class="st">'South African Airways'</span>]
 pct = (<span class="fn">len</span>(saa) / <span class="fn">len</span>(log)) * <span class="nu">100</span>
 <span class="fn">print</span>(<span class="fn">round</span>(pct, <span class="nu">2</span>))
@@ -2167,53 +2086,47 @@ log[<span class="st">'Airline_Operator'</span>].<span class="fn">value_counts</s
 <span class="cm"># Max value + which row</span>
 idx = log[<span class="st">'Total_Fatalities'</span>].<span class="fn">idxmax</span>()
 log.<span class="fn">loc</span>[idx]</code></pre>
-                            </div>
                         </div>
+                    </div>
 
-                        <div class="step">
-                            <div class="step-head" onclick="toggleStep(this)">
-                                <span class="step-num yellow">Q2</span>
-                                <span class="step-title"
-                                    >Random Sample Without Replacement</span
-                                >
-                                <span class="step-arrow">▼</span>
-                            </div>
-                            <div class="step-body">
-                                <pre><code><span class="cm"># Sample N rows without replacement</span>
+                    <div class="step">
+                        <div class="step-head" onclick="toggleStep(this)">
+                            <span class="step-num yellow">Q2</span>
+                            <span class="step-title">Random Sample Without Replacement</span>
+                            <span class="step-arrow">▼</span>
+                        </div>
+                        <div class="step-body">
+                            <pre><code><span class="cm"># Sample N rows without replacement</span>
 df_sample = df.<span class="fn">sample</span>(n=<span class="nu">5000</span>, replace=<span class="kw">False</span>, random_state=<span class="nu">42</span>)
 df_sample = df_sample.<span class="fn">reset_index</span>(drop=<span class="kw">True</span>)
 <span class="fn">print</span>(df_sample.<span class="fn">shape</span>)</code></pre>
-                            </div>
                         </div>
+                    </div>
 
-                        <div class="step">
-                            <div class="step-head" onclick="toggleStep(this)">
-                                <span class="step-num yellow">Q3</span>
-                                <span class="step-title"
-                                    >Check & Fix Zero Values</span
-                                >
-                                <span class="step-arrow">▼</span>
-                            </div>
-                            <div class="step-body">
-                                <pre><code><span class="cm"># Check zeros</span>
+                    <div class="step">
+                        <div class="step-head" onclick="toggleStep(this)">
+                            <span class="step-num yellow">Q3</span>
+                            <span class="step-title">Check & Fix Zero Values</span>
+                            <span class="step-arrow">▼</span>
+                        </div>
+                        <div class="step-body">
+                            <pre><code><span class="cm"># Check zeros</span>
 <span class="fn">print</span>((df == <span class="nu">0</span>).<span class="fn">sum</span>())
 
 <span class="cm"># Replace zeros with NaN then fill with mean</span>
 df.<span class="fn">replace</span>(<span class="nu">0</span>, np.nan, inplace=<span class="kw">True</span>)
 df.<span class="fn">fillna</span>(df.<span class="fn">mean</span>(numeric_only=<span class="kw">True</span>), inplace=<span class="kw">True</span>)</code></pre>
-                            </div>
                         </div>
+                    </div>
 
-                        <div class="step">
-                            <div class="step-head" onclick="toggleStep(this)">
-                                <span class="step-num yellow">Q4</span>
-                                <span class="step-title"
-                                    >iloc vs loc Quick Reference</span
-                                >
-                                <span class="step-arrow">▼</span>
-                            </div>
-                            <div class="step-body">
-                                <pre><code><span class="cm"># iloc = integer position (0-based, exclusive end)</span>
+                    <div class="step">
+                        <div class="step-head" onclick="toggleStep(this)">
+                            <span class="step-num yellow">Q4</span>
+                            <span class="step-title">iloc vs loc Quick Reference</span>
+                            <span class="step-arrow">▼</span>
+                        </div>
+                        <div class="step-body">
+                            <pre><code><span class="cm"># iloc = integer position (0-based, exclusive end)</span>
 df.<span class="fn">iloc</span>[<span class="nu">0</span>:<span class="nu">5</span>]     <span class="cm"># rows 0,1,2,3,4</span>
 df.<span class="fn">iloc</span>[<span class="nu">1</span>:<span class="nu">11</span>]    <span class="cm"># rows 1 to 10 by position</span>
 df.<span class="fn">iloc</span>[:, <span class="nu">1</span>:-<span class="nu">7</span>] <span class="cm"># columns: skip first 1 and last 7</span>
@@ -2221,21 +2134,19 @@ df.<span class="fn">iloc</span>[:, <span class="nu">1</span>:-<span class="nu">7
 <span class="cm"># loc = label (inclusive both ends)</span>
 df.<span class="fn">loc</span>[<span class="nu">1</span>:<span class="nu">10</span>]     <span class="cm"># rows with index LABEL 1 to 10</span>
 df.<span class="fn">loc</span>[:, <span class="st">'col'</span>]  <span class="cm"># all rows, column 'col'</span></code></pre>
-                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="steps">
-                        <div class="step open">
-                            <div class="step-head" onclick="toggleStep(this)">
-                                <span class="step-num red">Q5</span>
-                                <span class="step-title"
-                                    >All Imports in One Block</span
-                                >
-                                <span class="step-arrow">▼</span>
-                            </div>
-                            <div class="step-body">
-                                <pre><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
+                <div class="steps">
+                    <div class="step open">
+                        <div class="step-head" onclick="toggleStep(this)">
+                            <span class="step-num red">Q5</span>
+                            <span class="step-title">All Imports in One Block</span>
+                            <span class="step-arrow">▼</span>
+                        </div>
+                        <div class="step-body">
+                            <pre><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
 <span class="kw">import</span> numpy <span class="kw">as</span> np
 <span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
 <span class="kw">import</span> seaborn <span class="kw">as</span> sns
@@ -2249,19 +2160,17 @@ df.<span class="fn">loc</span>[:, <span class="st">'col'</span>]  <span class="c
 <span class="kw">from</span> sklearn.naive_bayes    <span class="kw">import</span> GaussianNB
 <span class="kw">from</span> sklearn.metrics        <span class="kw">import</span> (accuracy_score, confusion_matrix,
                                       classification_report)</code></pre>
-                            </div>
                         </div>
+                    </div>
 
-                        <div class="step">
-                            <div class="step-head" onclick="toggleStep(this)">
-                                <span class="step-num red">Q6</span>
-                                <span class="step-title"
-                                    >Classifier Cheat Sheet</span
-                                >
-                                <span class="step-arrow">▼</span>
-                            </div>
-                            <div class="step-body">
-                                <pre><code><span class="cm"># KNN — default</span>
+                    <div class="step">
+                        <div class="step-head" onclick="toggleStep(this)">
+                            <span class="step-num red">Q6</span>
+                            <span class="step-title">Classifier Cheat Sheet</span>
+                            <span class="step-arrow">▼</span>
+                        </div>
+                        <div class="step-body">
+                            <pre><code><span class="cm"># KNN — default</span>
 <span class="cl">KNeighborsClassifier</span>()
 
 <span class="cm"># Logistic Regression — add max_iter to avoid warning</span>
@@ -2272,19 +2181,17 @@ df.<span class="fn">loc</span>[:, <span class="st">'col'</span>]  <span class="c
 
 <span class="cm"># Naive Bayes — default</span>
 <span class="cl">GaussianNB</span>()</code></pre>
-                            </div>
                         </div>
+                    </div>
 
-                        <div class="step">
-                            <div class="step-head" onclick="toggleStep(this)">
-                                <span class="step-num red">Q7</span>
-                                <span class="step-title"
-                                    >Print Answers in Notebook</span
-                                >
-                                <span class="step-arrow">▼</span>
-                            </div>
-                            <div class="step-body">
-                                <pre><code><span class="cm"># For discussion questions — always use print()</span>
+                    <div class="step">
+                        <div class="step-head" onclick="toggleStep(this)">
+                            <span class="step-num red">Q7</span>
+                            <span class="step-title">Print Answers in Notebook</span>
+                            <span class="step-arrow">▼</span>
+                        </div>
+                        <div class="step-body">
+                            <pre><code><span class="cm"># For discussion questions — always use print()</span>
 <span class="fn">print</span>(<span class="st">"""
 Avg_Open_To_Buy refers to the average amount of credit available
 to the customer after purchases, calculated as Credit_Limit minus
@@ -2296,232 +2203,233 @@ From the statistical summary, the education level column has 6
 unique values. The most common level is 'Graduate', suggesting
 that the majority of customers are university graduates.
 """</span>)</code></pre>
-                            </div>
                         </div>
+                    </div>
 
-                        <div class="step">
-                            <div class="step-head" onclick="toggleStep(this)">
-                                <span class="step-num red">Q8</span>
-                                <span class="step-title">Exam Time Plan</span>
-                                <span class="step-arrow">▼</span>
-                            </div>
-                            <div class="step-body">
-                                <table class="data-table">
-                                    <tr>
-                                        <th>Section</th>
-                                        <th>Time</th>
-                                        <th>Tip</th>
-                                    </tr>
-                                    <tr>
-                                        <td>ST2 Theory (Q1)</td>
-                                        <td>40 min</td>
-                                        <td>
-                                            Do Gini first — most marks. Learning
-                                            curve = 4 marks quick win.
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Import + Inspect</td>
-                                        <td>10 min</td>
-                                        <td>
-                                            Paste your imports block, load data,
-                                            run all inspection lines fast.
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>EDA + Plots</td>
-                                        <td>20 min</td>
-                                        <td>
-                                            Use seaborn one-liners. Don't
-                                            over-style.
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Preprocessing</td>
-                                        <td>20 min</td>
-                                        <td>
-                                            Balance → encode → scale. In that
-                                            order.
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Split + Train</td>
-                                        <td>20 min</td>
-                                        <td>
-                                            Use the models dict loop — one block
-                                            for all 3 classifiers.
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Learning curves</td>
-                                        <td>15 min</td>
-                                        <td>
-                                            Use the function template — loop
-                                            over all models.
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Evaluate + Discuss</td>
-                                        <td>15 min</td>
-                                        <td>
-                                            Use print() for all discussion
-                                            answers. Use templates from
-                                            Interpret tab.
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+                    <div class="step">
+                        <div class="step-head" onclick="toggleStep(this)">
+                            <span class="step-num red">Q8</span>
+                            <span class="step-title">Exam Time Plan</span>
+                            <span class="step-arrow">▼</span>
+                        </div>
+                        <div class="step-body">
+                            <table class="data-table">
+                                <tr>
+                                    <th>Section</th>
+                                    <th>Time</th>
+                                    <th>Tip</th>
+                                </tr>
+                                <tr>
+                                    <td>ST2 Theory (Q1)</td>
+                                    <td>40 min</td>
+                                    <td>
+                                        Do Gini first — most marks. Learning
+                                        curve = 4 marks quick win.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Import + Inspect</td>
+                                    <td>10 min</td>
+                                    <td>
+                                        Paste your imports block, load data,
+                                        run all inspection lines fast.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>EDA + Plots</td>
+                                    <td>20 min</td>
+                                    <td>
+                                        Use seaborn one-liners. Don't
+                                        over-style.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Preprocessing</td>
+                                    <td>20 min</td>
+                                    <td>
+                                        Balance → encode → scale. In that
+                                        order.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Split + Train</td>
+                                    <td>20 min</td>
+                                    <td>
+                                        Use the models dict loop — one block
+                                        for all 3 classifiers.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Learning curves</td>
+                                    <td>15 min</td>
+                                    <td>
+                                        Use the function template — loop
+                                        over all models.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Evaluate + Discuss</td>
+                                    <td>15 min</td>
+                                    <td>
+                                        Use print() for all discussion
+                                        answers. Use templates from
+                                        Interpret tab.
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
-                <!-- /two-col -->
             </div>
+            <!-- /two-col -->
         </div>
-        <!-- /app -->
+    </div>
+    <!-- /app -->
 
-        <script>
-            // ── SECTION SWITCHING ──
-            function showSection(id) {
-                document
-                    .querySelectorAll(".section")
-                    .forEach((s) => s.classList.remove("active"));
-                document
-                    .querySelectorAll(".tab")
-                    .forEach((t) => t.classList.remove("active"));
-                document.getElementById("sec-" + id).classList.add("active");
-                event.currentTarget.classList.add("active");
-            }
-
-            // ── STEP ACCORDION ──
-            function toggleStep(head) {
-                const step = head.parentElement;
-                step.classList.toggle("open");
-            }
-
-            // ── SEARCH ──
+    <script>
+        // ── SECTION SWITCHING ──
+        function showSection(id) {
             document
-                .getElementById("search")
-                .addEventListener("input", function () {
-                    const q = this.value.trim().toLowerCase();
-                    if (!q) {
-                        clearHighlights();
-                        return;
-                    }
+                .querySelectorAll(".section")
+                .forEach((s) => s.classList.remove("active"));
+            document
+                .querySelectorAll(".tab")
+                .forEach((t) => t.classList.remove("active"));
+            document.getElementById("sec-" + id).classList.add("active");
+            event.currentTarget.classList.add("active");
+        }
 
-                    // open all steps that match, close ones that don't
-                    document.querySelectorAll(".step").forEach((step) => {
-                        const text = step.innerText.toLowerCase();
-                        if (text.includes(q)) {
-                            step.classList.add("open", "highlight");
-                        } else {
-                            step.classList.remove("open", "highlight");
-                        }
-                    });
+        // ── STEP ACCORDION ──
+        function toggleStep(head) {
+            const step = head.parentElement;
+            step.classList.toggle("open");
+        }
 
-                    // show first matching section
-                    const activeSec = document.querySelector(".section.active");
-                    const hasMatch =
-                        activeSec && activeSec.querySelector(".step.highlight");
-                    if (!hasMatch) {
-                        // switch to a section that has a match
-                        document.querySelectorAll(".section").forEach((sec) => {
-                            if (sec.querySelector(".step.highlight")) {
-                                const id = sec.id.replace("sec-", "");
-                                // activate corresponding tab
-                                document
-                                    .querySelectorAll(".tab")
-                                    .forEach((t) =>
-                                        t.classList.remove("active"),
-                                    );
-                                document
-                                    .querySelectorAll(".section")
-                                    .forEach((s) =>
-                                        s.classList.remove("active"),
-                                    );
-                                sec.classList.add("active");
-                                // find matching tab
-                                document
-                                    .querySelectorAll(".tab")
-                                    .forEach((t) => {
-                                        if (
-                                            t
-                                                .getAttribute("onclick")
-                                                .includes(id)
-                                        )
-                                            t.classList.add("active");
-                                    });
-                            }
-                        });
+        // ── SEARCH ──
+        document
+            .getElementById("search")
+            .addEventListener("input", function () {
+                const q = this.value.trim().toLowerCase();
+                if (!q) {
+                    clearHighlights();
+                    return;
+                }
+
+                // open all steps that match, close ones that don't
+                document.querySelectorAll(".step").forEach((step) => {
+                    const text = step.innerText.toLowerCase();
+                    if (text.includes(q)) {
+                        step.classList.add("open", "highlight");
+                    } else {
+                        step.classList.remove("open", "highlight");
                     }
                 });
 
-            function clearHighlights() {
-                document
-                    .querySelectorAll(".step")
-                    .forEach((s) => s.classList.remove("highlight"));
-            }
-
-            // ── TIMER ──
-            let totalSeconds = 0;
-            let remaining = 0;
-            let running = false;
-            let interval = null;
-            let lastSet = 0;
-
-            function setTimer(minutes) {
-                resetTimer();
-                totalSeconds = minutes * 60;
-                remaining = totalSeconds;
-                lastSet = minutes;
-                document
-                    .querySelectorAll('.timer-btn[onclick^="setTimer"]')
-                    .forEach((b) => b.classList.remove("active"));
-                event.currentTarget.classList.add("active");
-                updateDisplay();
-            }
-
-            function toggleTimer() {
-                if (remaining <= 0) return;
-                running = !running;
-                document.getElementById("start-btn").textContent = running
-                    ? "⏸"
-                    : "▶";
-                if (running) {
-                    interval = setInterval(tick, 1000);
-                } else {
-                    clearInterval(interval);
+                // show first matching section
+                const activeSec = document.querySelector(".section.active");
+                const hasMatch =
+                    activeSec && activeSec.querySelector(".step.highlight");
+                if (!hasMatch) {
+                    // switch to a section that has a match
+                    document.querySelectorAll(".section").forEach((sec) => {
+                        if (sec.querySelector(".step.highlight")) {
+                            const id = sec.id.replace("sec-", "");
+                            // activate corresponding tab
+                            document
+                                .querySelectorAll(".tab")
+                                .forEach((t) =>
+                                    t.classList.remove("active"),
+                                );
+                            document
+                                .querySelectorAll(".section")
+                                .forEach((s) =>
+                                    s.classList.remove("active"),
+                                );
+                            sec.classList.add("active");
+                            // find matching tab
+                            document
+                                .querySelectorAll(".tab")
+                                .forEach((t) => {
+                                    if (
+                                        t
+                                            .getAttribute("onclick")
+                                            .includes(id)
+                                    )
+                                        t.classList.add("active");
+                                });
+                        }
+                    });
                 }
-            }
+            });
 
-            function tick() {
-                if (remaining <= 0) {
-                    clearInterval(interval);
-                    running = false;
-                    document.getElementById("start-btn").textContent = "▶";
-                    return;
-                }
-                remaining--;
-                updateDisplay();
-            }
+        function clearHighlights() {
+            document
+                .querySelectorAll(".step")
+                .forEach((s) => s.classList.remove("highlight"));
+        }
 
-            function resetTimer() {
+        // ── TIMER ──
+        let totalSeconds = 0;
+        let remaining = 0;
+        let running = false;
+        let interval = null;
+        let lastSet = 0;
+
+        function setTimer(minutes) {
+            resetTimer();
+            totalSeconds = minutes * 60;
+            remaining = totalSeconds;
+            lastSet = minutes;
+            document
+                .querySelectorAll('.timer-btn[onclick^="setTimer"]')
+                .forEach((b) => b.classList.remove("active"));
+            event.currentTarget.classList.add("active");
+            updateDisplay();
+        }
+
+        function toggleTimer() {
+            if (remaining <= 0) return;
+            running = !running;
+            document.getElementById("start-btn").textContent = running
+                ? "⏸"
+                : "▶";
+            if (running) {
+                interval = setInterval(tick, 1000);
+            } else {
+                clearInterval(interval);
+            }
+        }
+
+        function tick() {
+            if (remaining <= 0) {
                 clearInterval(interval);
                 running = false;
-                remaining = totalSeconds;
                 document.getElementById("start-btn").textContent = "▶";
-                updateDisplay();
+                return;
             }
+            remaining--;
+            updateDisplay();
+        }
 
-            function updateDisplay() {
-                const el = document.getElementById("timer-display");
-                const m = Math.floor(remaining / 60);
-                const s = remaining % 60;
-                el.textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-                const pct = totalSeconds > 0 ? remaining / totalSeconds : 1;
-                el.className = "";
-                if (pct < 0.1) el.classList.add("danger");
-                else if (pct < 0.25) el.classList.add("warn");
-            }
-        </script>
-    </body>
+        function resetTimer() {
+            clearInterval(interval);
+            running = false;
+            remaining = totalSeconds;
+            document.getElementById("start-btn").textContent = "▶";
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const el = document.getElementById("timer-display");
+            const m = Math.floor(remaining / 60);
+            const s = remaining % 60;
+            el.textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+            const pct = totalSeconds > 0 ? remaining / totalSeconds : 1;
+            el.className = "";
+            if (pct < 0.1) el.classList.add("danger");
+            else if (pct < 0.25) el.classList.add("warn");
+        }
+    </script>
+</body>
+
 </html>
