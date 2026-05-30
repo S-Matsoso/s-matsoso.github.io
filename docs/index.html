@@ -664,16 +664,6 @@
             </svg>
             <input type="search" id="search" placeholder="Search code, steps…" autocomplete="off" />
         </div>
-        <div class="timer-wrap">
-            <button class="timer-btn" onclick="setTimer(40)">40m</button>
-            <button class="timer-btn" onclick="setTimer(120)">120m</button>
-            <button class="timer-btn" onclick="setTimer(140)">140m</button>
-            <div id="timer-display">--:--</div>
-            <button class="timer-btn" id="start-btn" onclick="toggleTimer()">
-                ▶
-            </button>
-            <button class="timer-btn" onclick="resetTimer()">↺</button>
-        </div>
         <div class="nav-tabs" id="nav">
             <button class="tab active" onclick="showSection('st1')">
                 ST1 Preprocess
@@ -693,6 +683,9 @@
         </div>
         <div class="nav-tabs" id="nav">
             <a href="2023.html" class="tab">MoreQPs</a>
+        </div>
+        <div class="nav-tabs" id="nav">
+            <a href="part2.html" class="tab">Attempt 2</a>
         </div>
     </div>
 
@@ -2368,67 +2361,6 @@ that the majority of customers are university graduates.
                 .forEach((s) => s.classList.remove("highlight"));
         }
 
-        // ── TIMER ──
-        let totalSeconds = 0;
-        let remaining = 0;
-        let running = false;
-        let interval = null;
-        let lastSet = 0;
-
-        function setTimer(minutes) {
-            resetTimer();
-            totalSeconds = minutes * 60;
-            remaining = totalSeconds;
-            lastSet = minutes;
-            document
-                .querySelectorAll('.timer-btn[onclick^="setTimer"]')
-                .forEach((b) => b.classList.remove("active"));
-            event.currentTarget.classList.add("active");
-            updateDisplay();
-        }
-
-        function toggleTimer() {
-            if (remaining <= 0) return;
-            running = !running;
-            document.getElementById("start-btn").textContent = running
-                ? "⏸"
-                : "▶";
-            if (running) {
-                interval = setInterval(tick, 1000);
-            } else {
-                clearInterval(interval);
-            }
-        }
-
-        function tick() {
-            if (remaining <= 0) {
-                clearInterval(interval);
-                running = false;
-                document.getElementById("start-btn").textContent = "▶";
-                return;
-            }
-            remaining--;
-            updateDisplay();
-        }
-
-        function resetTimer() {
-            clearInterval(interval);
-            running = false;
-            remaining = totalSeconds;
-            document.getElementById("start-btn").textContent = "▶";
-            updateDisplay();
-        }
-
-        function updateDisplay() {
-            const el = document.getElementById("timer-display");
-            const m = Math.floor(remaining / 60);
-            const s = remaining % 60;
-            el.textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-            const pct = totalSeconds > 0 ? remaining / totalSeconds : 1;
-            el.className = "";
-            if (pct < 0.1) el.classList.add("danger");
-            else if (pct < 0.25) el.classList.add("warn");
-        }
     </script>
 </body>
 

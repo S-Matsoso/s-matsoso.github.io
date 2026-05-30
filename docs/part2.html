@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSIS3754 - All Past Paper Solutions</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            display: flex;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            padding: 20px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        nav h2 {
+            font-size: 1.2rem;
+            color: #0f172a;
+            margin-bottom: 15px;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav li {
+            margin-bottom: 10px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main Content */
+        main {
+            margin-left: 280px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        h1 {
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        h2.section-title {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 3px dashed #cbd5e1;
+            color: #334155;
+        }
+
+        pre {
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-top: 0 !important;
+        }
+
+        .code-header {
+            background-color: #1e293b;
+            color: #94a3b8;
+            padding: 10px 15px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin-bottom: -5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <h2>Past Papers</h2>
+        <ul>
+            <li><a href="#st1-2024">ST1 2024 (Aviation)</a></li>
+            <li><a href="#st1-2025">ST1 2025 (Cars)</a></li>
+            <li><a href="#st1-2026">ST1 2026 (Chess)</a></li>
+            <li><a href="#st2-2024">ST2 2024 (Fake Currency)</a></li>
+            <li><a href="#st2-2025">ST2 2025 (Credit Cards)</a></li>
+            <li><a href="#st2-2026">ST2 2026 (E-commerce)</a></li>
+            <li><a href="#e1-2024">E1 2024 (Water Quality)</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <header>
+            <h1>CSIS3754: Data Science Portfolio</h1>
+            <p>Comprehensive solutions for Question 2 across all provided past papers.</p>
+        </header>
+
+        <h2 id="st1-2024" class="section-title">Semester Test 1 (2024) - Aviation Data</h2>
+        <div class="code-header">CSIS3754_YourStudentNumber_ST1_2024.ipynb</div>
+        <pre><code class="language-python">import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+
+# 2.1 Import the data file into a dataframe
+log = pd.read_csv('aviation_log.csv')
+
+# 2.2 Change the dataframe column headings
+log.rename(columns={
+    'Location': 'Incident_Location', 'Operator': 'Airline_Operator', 
+    'Type': 'Aircraft_Type', 'Registration': 'Registration_Number', 
+    'Aboard': 'People_Aboard', 'Fatalities': 'Fatalities_Aboard', 
+    'Ground': 'Ground_Fatalities', 'Summary': 'Event_Info'
+}, inplace=True)
+
+# 2.3 Determine and display the row count, column count and total elements
+print(f"Rows: {log.shape[0]}, Columns: {log.shape[1]}, Elements: {log.size}")
+
+# 2.4 Inspect the data
+display(log.head(10))
+display(log.describe(include='all'))
+print(log.dtypes)
+
+# 2.5 Change the data type of the Date column to DateTime
+log['Date'] = pd.to_datetime(log['Date'])
+
+# 2.6 Split the value of the Date column into three parts (Year, Month, Day)
+log.insert(log.columns.get_loc('Time'), 'Year', log['Date'].dt.year.astype('Int64'))
+log.insert(log.columns.get_loc('Time'), 'Month', log['Date'].dt.month.astype('Int64'))
+log.insert(log.columns.get_loc('Time'), 'Day', log['Date'].dt.day.astype('Int64'))
+
+# 2.7 Add a column Total_Fatalities (Fatalities_Aboard + Ground_Fatalities)
+log['Total_Fatalities'] = log['Fatalities_Aboard'] + log['Ground_Fatalities']
+
+# 2.7.1 - 2.7.3 Find max fatalities, date, and event info
+max_fatality_idx = log['Total_Fatalities'].idxmax()
+print("Max Fatalities:", log.loc[max_fatality_idx, 'Total_Fatalities'])
+print("Date of Max Fatalities:", log.loc[max_fatality_idx, 'Date'])
+print("Event Info:", log.loc[max_fatality_idx, 'Event_Info'])
+
+# 2.8 Top 20 Airline Operators with most crashes
+print(log['Airline_Operator'].value_counts().head(20))
+
+# 2.9 Percentage of crashes involving South African Airways
+saa_crashes = len(log[log['Airline_Operator'] == 'South African Airways'])
+percentage = (saa_crashes / len(log)) * 100
+print(f"SAA Crashes Percentage: {round(percentage, 2)}%")
+
+# 2.10 Pie chart: Fatalities Aboard vs Ground Fatalities
+total_aboard = log['Fatalities_Aboard'].sum()
+total_ground = log['Ground_Fatalities'].sum()
+plt.pie([total_aboard, total_ground], labels=['Fatalities Aboard', 'Ground Fatalities'], autopct='%1.0f%%')
+plt.show()
+
+# 2.12 Overlaying Bar Charts (Total vs Aboard per year)
+yearly_data = log.groupby('Year')[['Total_Fatalities', 'Fatalities_Aboard']].sum().reset_index()
+sns.barplot(data=yearly_data, x='Year', y='Total_Fatalities', color='red')
+sns.barplot(data=yearly_data, x='Year', y='Fatalities_Aboard', color='blue')
+plt.show()
+
+# 2.14 Aircraft Type with highest sum of Fatalities Aboard
+print("Highest Fatalities by Aircraft:", log.groupby('Aircraft_Type')['Fatalities_Aboard'].sum().idxmax())
+
+# 2.15 Discard specific columns
+log.drop(columns=['Date', 'Time', 'Flight #', 'Route', 'Registration_Number', 'cn/ln', 'Event_Info'], inplace=True, errors='ignore')
+
+# 2.16 Handle missing values
+print("Missing before:", log.isnull().sum().sum())
+log.dropna(inplace=True)
+print("Missing after:", log.isnull().sum().sum())
+
+# 2.17 Convert text to numeric (Categorical to numeric & Vector space)
+log['Airline_Operator'] = pd.factorize(log['Airline_Operator'])[0]
+log['Aircraft_Type'] = pd.factorize(log['Aircraft_Type'])[0]
+log = pd.get_dummies(log, columns=['Incident_Location'], drop_first=True)
+
+# 2.18 Ensure all values are on same scale (excluding Year, Month, Day)
+cols_to_scale = [c for c in log.columns if c not in ['Year', 'Month', 'Day']]
+scaler = StandardScaler()
+log[cols_to_scale] = scaler.fit_transform(log[cols_to_scale])
+
+# 2.19 Write to clean_aviation_log.csv
+log.to_csv('clean_aviation_log.csv', index=False)
+</code></pre>
+
+        <h2 id="st1-2025" class="section-title">Semester Test 1 (2025) - Cars Data</h2>
+        <div class="code-header">CSIS3754_YourStudentNumber_ST1_2025.ipynb</div>
+        <pre><code class="language-python">import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+
+# 2.1 Import the data file
+cars = pd.read_csv('cars.csv')
+
+# 2.2 Determine and display row count, column count, and elements
+print(f"Rows: {cars.shape[0]}, Columns: {cars.shape[1]}, Elements: {cars.size}")
+
+# 2.3 Inspect data
+print(cars.dtypes)
+display(cars.head(20))
+
+# 2.4 Shuffle rows and explore indexing differences
+cars = cars.sample(frac=1, random_state=42)
+print("Row 1 to 10 (iloc):\n", cars.iloc[0:10])
+print("Index 1 to 10 (loc):\n", cars.loc[1:10])
+print("Reason: iloc uses position (0-based), loc uses the actual index labels which are now scrambled.")
+cars.reset_index(drop=True, inplace=True)
+
+# 2.5 Generate statistical summary
+display(cars.describe(include='all'))
+
+# 2.6 Add age column
+current_year = 2025 # Assuming current year for calculation
+cars['age'] = current_year - cars['year']
+
+# 2.6.1 Oldest vehicle name
+oldest_idx = cars['age'].idxmax()
+print("Oldest Vehicle:", cars.loc[oldest_idx, 'name'])
+
+# 2.6.2 Top 20 vehicles with highest frequency
+print(cars['name'].value_counts().head(20))
+
+# 2.6.3 Top 10 most expensive unique vehicle names
+print(cars.sort_values('selling_price', ascending=False)['name'].drop_duplicates().head(10))
+
+# 2.7 Pie chart: Transmission types
+trans_counts = cars['transmission'].value_counts()
+plt.pie(trans_counts, labels=trans_counts.index, autopct='%1.2f%%')
+plt.title('Transmission Types')
+plt.show()
+
+# 2.8 Bar chart: Fuel types
+sns.countplot(data=cars, x='fuel')
+plt.title('Fuel Types')
+plt.show()
+
+# 2.9 Handle missing values (Augment with average of relevant feature for same vehicle name)
+print("Missing before:", cars.isnull().sum())
+# Assuming numeric columns have missing values
+numeric_cols = cars.select_dtypes(include='number').columns
+for col in numeric_cols:
+    cars[col] = cars.groupby('name')[col].transform(lambda x: x.fillna(x.mean()))
+cars.dropna(inplace=True) # Drop remaining if any couldn't be grouped
+print("Missing after:", cars.isnull().sum().sum())
+
+# 2.10 Discard the name column
+cars.drop('name', axis=1, inplace=True)
+
+# 2.11 Convert text values
+cars['fuel'] = pd.factorize(cars['fuel'])[0]
+cars['seller_type'] = pd.factorize(cars['seller_type'])[0]
+cars['transmission'] = pd.factorize(cars['transmission'])[0]
+cars = pd.get_dummies(cars, columns=['owner'], drop_first=True)
+
+# 2.12 Correlation matrix and heatmap
+plt.figure(figsize=(10, 8))
+sns.heatmap(cars.corr(), annot=True, cmap='coolwarm')
+plt.show()
+
+# 2.13 Scale values excluding 'year'
+cols_to_scale = [c for c in cars.columns if c != 'year']
+scaler = StandardScaler()
+cars[cols_to_scale] = scaler.fit_transform(cars[cols_to_scale])
+
+# 2.14 Write to clean_cars.csv
+cars.to_csv('clean_cars.csv', index=False)
+</code></pre>
+
+        <h2 id="st1-2026" class="section-title">Semester Test 1 (2026) - Chess Games</h2>
+        <div class="code-header">CSIS3754_YourStudentNumber_ST1_2026.ipynb</div>
+        <pre><code class="language-python">import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+
+# 2.1 Import the data file with specific column headings
+headers = ['game_id', 'game_is_rated', 'start_time', 'end_time', 'number_of_moves', 
+           'game_outcome', 'winner', 'time_increment', 'white_piece_player_id', 
+           'white_piece_player_rating', 'black_piece_player_id', 'black_piece_player_rating', 
+           'all_moves_in_standard_chess_notation', 'standardised_code_for_any_given_opening_moves', 
+           'opening_moves_name', 'number_of_moves_in_the_opening_phase']
+
+chess_games = pd.read_csv('chess_games.csv', names=headers, header=0)
+
+# 2.2 Inspect the data
+display(chess_games.head(20))
+display(chess_games.describe(include='all'))
+print(chess_games.dtypes)
+
+# 2.3 & 2.4 Row, column, and elements count
+print(f"Rows: {chess_games.shape[0]}, Columns: {chess_games.shape[1]}")
+print(f"Total Elements: {chess_games.size}")
+
+# 2.5 Overall lowest and highest rated player
+min_rating = min(chess_games['white_piece_player_rating'].min(), chess_games['black_piece_player_rating'].min())
+max_rating = max(chess_games['white_piece_player_rating'].max(), chess_games['black_piece_player_rating'].max())
+print(f"Lowest Rating: {min_rating}, Highest Rating: {max_rating}")
+
+# 2.6 Count for each game outcome
+print(chess_games['game_outcome'].value_counts())
+
+# 2.7 Percentage of games ended in "mate"
+mate_pct = (len(chess_games[chess_games['game_outcome'] == 'mate']) / len(chess_games)) * 100
+print(f"Mate Percentage: {round(mate_pct, 2)}%")
+
+# 2.8 Pie chart: Game Outcomes
+outcome_counts = chess_games['game_outcome'].value_counts()
+plt.pie(outcome_counts, labels=outcome_counts.index, autopct='%1.0f%%')
+plt.title('Game Outcomes')
+plt.show()
+
+# 2.10 Percentage of white losses due to "resigned"
+white_losses = chess_games[chess_games['winner'] == 'black']
+resigned_pct = (len(white_losses[white_losses['game_outcome'] == 'resign']) / len(white_losses)) * 100
+print(f"White resigned on loss pct: {round(resigned_pct, 2)}%")
+
+# 2.12 Bar chart for class balance (winner)
+sns.countplot(data=chess_games, x='winner')
+plt.title('Winner Distribution (Balance Check)')
+plt.show()
+
+# 2.15 & 2.16 Handle missing values (Fill forward/backward as proxy depending on context)
+chess_games.fillna(method='ffill', inplace=True)
+
+# 2.17 Discard columns
+cols_drop = ['game_id', 'time_increment', 'all_moves_in_standard_chess_notation', 'opening_moves_name']
+chess_games.drop(columns=cols_drop, inplace=True, errors='ignore')
+
+# 2.18 & 2.21 Encode Text Values
+text_cols = chess_games.select_dtypes(include='object').columns
+for col in text_cols:
+    if col == 'standardised_code_for_any_given_opening_moves':
+        chess_games = pd.get_dummies(chess_games, columns=[col], drop_first=True)
+    elif chess_games[col].nunique() == 2:
+        chess_games[col] = pd.factorize(chess_games[col])[0]
+    else:
+        chess_games[col] = pd.factorize(chess_games[col])[0]
+
+# 2.19 Correlation Matrix
+plt.figure(figsize=(10, 8))
+sns.heatmap(chess_games.corr(), cmap='coolwarm')
+plt.title('Correlation Heatmap')
+plt.show()
+
+# 2.23 Save
+chess_games.to_csv('clean_chess_games.csv', index=False)
+</code></pre>
+
+        <h2 id="st2-2024" class="section-title">Semester Test 2 (2024) - Fake Currency</h2>
+        <div class="code-header">CSIS3754_YourStudentNumber_ST2-2_2024.ipynb</div>
+        <pre><code class="language-python">import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split, cross_validate, learning_curve
+from sklearn.naive_bayes import GaussianNB
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+import numpy as np
+
+# 2.1 & 2.2 Import and Rename
+currency = pd.read_csv('fake_currency_data.csv')
+currency.rename(columns={'Country': 'CountryOfOrigin'}, inplace=True)
+
+# 2.3 Inspect Data
+currency.info()
+display(currency.describe())
+print(currency.nunique())
+
+# 2.4 Boxplots
+cols = ['Weight', 'Length', 'Width', 'Thickness']
+for c in cols:
+    plt.figure(figsize=(5,3))
+    sns.boxplot(data=currency, x=c)
+    plt.show()
+
+# 2.4.2 Fix outliers (Example: Z-score method)
+from scipy.stats import zscore
+for col in cols:
+    currency = currency[(np.abs(zscore(currency[col])) < 3)]
+
+# 2.5 Reduce Sample Size
+currency = currency.sample(n=5000, random_state=42) # Adjust n as needed based on original size
+
+# 2.6 & 2.7 Balance Check
+plt.pie(currency['Counterfeit'].value_counts(), labels=['Genuine', 'Counterfeit'], autopct='%1.1f%%')
+plt.title('Counterfeit vs Genuine')
+plt.show()
+
+# 2.8 Encode text
+for col in currency.select_dtypes(include='object').columns:
+    if currency[col].nunique() == 2:
+        currency[col] = pd.factorize(currency[col])[0]
+    else:
+        currency = pd.get_dummies(currency, columns=[col], drop_first=True)
+
+# 2.10 Define X/y and split
+X = currency.drop('Counterfeit', axis=1)
+y = currency['Counterfeit']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 2.11 Train classifiers with K-Fold
+models = {
+    'Naive Bayes': GaussianNB(),
+    'Logistic Regression': LogisticRegression(max_iter=1000),
+    'SVM': SVC(gamma='auto')
+}
+
+best_f1 = 0
+best_model = None
+
+for name, model in models.items():
+    cv = cross_validate(model, X_train, y_train, cv=5, scoring=['accuracy', 'f1'])
+    f1 = cv['test_f1'].mean()
+    print(f"{name} - Acc: {cv['test_accuracy'].mean():.3f}, F1: {f1:.3f}")
+    if f1 > best_f1:
+        best_f1 = f1
+        best_model = model
+
+# 2.12 Evaluate Best Model
+best_model.fit(X_train, y_train)
+y_pred = best_model.predict(X_test)
+print("\nBest Model Test Accuracy:", accuracy_score(y_test, y_pred))
+print(confusion_matrix(y_test, y_pred))
+print(classification_report(y_test, y_pred))
+</code></pre>
+
+        <h2 id="st2-2025" class="section-title">Semester Test 2 (2025) - Credit Card Customers</h2>
+        <div class="code-header">CSIS3754_YourStudentNumber_ST2-2_2025.ipynb</div>
+        <pre><code class="language-python">import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split, cross_validate, learning_curve
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from imblearn.under_sampling import RandomUnderSampler
+import numpy as np
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# 2.1 & 2.2 Import and Inspect
+customers = pd.read_csv('credit_card_customers.csv')
+print(f"Rows: {customers.shape[0]}, Cols: {customers.shape[1]}")
+display(customers.tail(20))
+
+# 2.3 Discard columns
+customers = customers.iloc[:, 1:-7]
+
+# 2.5 Generate stat summary
+display(customers.describe())
+
+# 2.7 Plots
+sns.catplot(data=customers, x='Education_Level', hue='Card_Category', kind='count', height=5, aspect=2)
+plt.show()
+
+sns.scatterplot(data=customers, x='Credit_Limit', y='Avg_Open_To_Buy')
+plt.show()
+
+# 2.8 & 2.9 Attrition Flag Balance
+print(customers['Attrition_Flag'].value_counts())
+plt.pie(customers['Attrition_Flag'].value_counts(), labels=customers['Attrition_Flag'].unique(), autopct='%1.3f%%')
+plt.show()
+
+# 2.10 Undersampling
+rus = RandomUnderSampler(random_state=42)
+X_imb = customers.drop('Attrition_Flag', axis=1)
+y_imb = customers['Attrition_Flag']
+X_res, y_res = rus.fit_resample(X_imb, y_imb)
+customers_resampled = pd.concat([X_res, y_res], axis=1)
+
+# 2.12 Convert text to numeric
+for col in customers_resampled.select_dtypes(include='object').columns:
+    if col == 'Attrition_Flag':
+        customers_resampled[col] = pd.factorize(customers_resampled[col])[0]
+    elif customers_resampled[col].nunique() == 2:
+        customers_resampled[col] = pd.factorize(customers_resampled[col])[0]
+    else:
+        customers_resampled = pd.get_dummies(customers_resampled, columns=[col], drop_first=True)
+
+# 2.13 Train/Test Split
+X = customers_resampled.drop('Attrition_Flag', axis=1)
+y = customers_resampled['Attrition_Flag']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 2.14 Models
+models = {
+    'KNN': KNeighborsClassifier(),
+    'Logistic Regression': LogisticRegression(max_iter=1000),
+    'SVM': SVC(gamma='auto')
+}
+
+best_f1 = 0
+best_model = None
+
+for name, model in models.items():
+    cv = cross_validate(model, X_train, y_train, cv=5, scoring=['accuracy', 'f1'])
+    f1 = cv['test_f1'].mean()
+    if f1 > best_f1:
+        best_f1 = f1
+        best_model = model
+
+# 2.15 Predictions
+best_model.fit(X_train, y_train)
+y_pred = best_model.predict(X_test)
+print(classification_report(y_test, y_pred))
+</code></pre>
+
+        <h2 id="st2-2026" class="section-title">Semester Test 2 (2026) - E-commerce Orders</h2>
+        <div class="code-header">CSIS3754_YourStudentNumber_ST2-2_2026.ipynb</div>
+        <pre><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split, cross_validate, learning_curve
+from imblearn.over_sampling import RandomOverSampler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# 2.1 & 2.2 Import and Inspect
+orders = pd.read_excel('ecommerce.xlsx')
+print(f"Rows: {orders.shape[0]}, Cols: {orders.shape[1]}")
+
+# 2.3 Discard columns
+cols_to_drop = ['OrderID', 'Date', 'CustomerID', 'Tracking Number', 'Coupon Code']
+orders.drop(columns=cols_to_drop, inplace=True, errors='ignore')
+
+# 2.5 Plots
+sns.barplot(data=orders, x='Product', y='UnitPrice', estimator=np.mean)
+plt.xticks(rotation=45)
+plt.show()
+
+sns.countplot(data=orders, x='OrderStatus', hue='PaymentMethod')
+plt.show()
+
+# 2.6 Target Feature
+orders['Cancelled'] = (orders['OrderStatus'] == 'Cancelled').astype(int)
+orders.drop('OrderStatus', axis=1, inplace=True)
+
+# 2.7 & 2.8 Oversampling
+plt.pie(orders['Cancelled'].value_counts(), labels=['Not Cancelled', 'Cancelled'], autopct='%1.1f%%')
+plt.show()
+
+ros = RandomOverSampler(random_state=42)
+X_imbalanced = orders.drop('Cancelled', axis=1)
+y_imbalanced = orders['Cancelled']
+X_resampled, y_resampled = ros.fit_resample(X_imbalanced, y_imbalanced)
+orders_resampled = pd.concat([X_resampled, y_resampled], axis=1)
+
+# 2.9 Encode
+text_cols = orders_resampled.select_dtypes(include=['object']).columns
+cols_drop_txt = [c for c in text_cols if orders_resampled[c].nunique() > 10]
+orders_resampled.drop(columns=cols_drop_txt, inplace=True)
+
+for col in orders_resampled.select_dtypes(include=['object']).columns:
+    if orders_resampled[col].nunique() == 2:
+        orders_resampled[col] = pd.factorize(orders_resampled[col])[0]
+    else:
+        orders_resampled = pd.get_dummies(orders_resampled, columns=[col], drop_first=True)
+
+# 2.10 Split
+X = orders_resampled.drop('Cancelled', axis=1)
+y = orders_resampled['Cancelled']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 2.11 Models
+models = {
+    'KNN': KNeighborsClassifier(),
+    'Logistic Regression': LogisticRegression(max_iter=1000),
+    'SVM': SVC(gamma='auto')
+}
+
+best_f1 = 0
+best_model = None
+
+for name, model in models.items():
+    cv = cross_validate(model, X_train, y_train, cv=5, scoring=['accuracy', 'f1'])
+    f1 = cv['test_f1'].mean()
+    if f1 > best_f1:
+        best_f1 = f1
+        best_model = model
+
+# 2.12 Evaluate
+best_model.fit(X_train, y_train)
+y_pred = best_model.predict(X_test)
+print(classification_report(y_test, y_pred))
+</code></pre>
+
+        <h2 id="e1-2024" class="section-title">Main End-of-Year Exam 1 (2024) - Water Quality</h2>
+        <div class="code-header">CSIS3754_YourStudentNumber_E1-2_2024.ipynb</div>
+        <pre><code class="language-python">import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+# 2.1 Read Data
+water = pd.read_csv('waterquality.csv')
+
+# 2.2 Summary
+print(f"Records: {water.shape[0]}, Features: {water.shape[1]}")
+display(water.iloc[1000:1020]) # records 1001 to 1020 (0-indexed)
+display(water.describe())
+water.info()
+print("Missing values:\n", water.isnull().sum())
+
+# 2.3 Take care of missing values
+water.fillna(water.mean(numeric_only=True), inplace=True)
+print("Missing after fill:\n", water.isnull().sum())
+
+# 2.4 Pre-processing: Scale the data, ensure no object types
+if 'Date' in water.columns:
+    water.drop('Date', axis=1, inplace=True) # Date is often object, drop for numerical clustering
+
+scaler = StandardScaler()
+water_scaled = scaler.fit_transform(water)
+
+# 2.5 K-Means Clustering (Determine optimal K with Elbow Method)
+wcss = []
+for i in range(1, 11):
+    kmeans = KMeans(n_clusters=i, random_state=42, n_init=10)
+    kmeans.fit(water_scaled)
+    wcss.append(kmeans.inertia_)
+
+plt.plot(range(1, 11), wcss)
+plt.title('Elbow Method')
+plt.show()
+
+# Assuming optimal k=3 based on elbow
+optimal_k = 3
+kmeans = KMeans(n_clusters=optimal_k, random_state=42, n_init=10)
+labels = kmeans.fit_predict(water_scaled)
+print("Identified Labels:", set(labels))
+
+# 2.6 PCA for dimensionality reduction
+pca = PCA(n_components=2)
+water_pca = pca.fit_transform(water_scaled)
+
+print(f"Original dimensions: {water_scaled.shape}")
+print(f"PCA dimensions: {water_pca.shape}")
+print("Explained Variance Ratio:", pca.explained_variance_ratio_)
+
+# Scatterplot using seaborn
+pca_df = pd.DataFrame(data=water_pca, columns=['PC1', 'PC2'])
+pca_df['Cluster'] = labels
+
+plt.figure(figsize=(8, 6))
+sns.scatterplot(data=pca_df, x='PC1', y='PC2', hue='Cluster', palette='viridis')
+plt.title('PCA Clusters of Water Quality')
+plt.show()
+
+# 2.7 Evaluate PCA
+print("""
+Evaluation: The scatter plot effectively demonstrates if dimensionality reduction 
+successfully separated the clusters into distinct geographical groupings on the 2D plane. 
+The explained variance shows how much original information was retained.
+""")
+</code></pre>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+
+</html>
